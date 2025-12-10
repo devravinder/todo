@@ -1,6 +1,6 @@
 # Kanban Board
 
-<!-- Config: Last Task ID: 2 -->
+<!-- Config: Last Task ID: 3 -->
 
 ## ⚙️ Configuration
 
@@ -32,6 +32,10 @@
 - [x] understand why we need archieve.md
 
 ## 🚀 In Progress
+
+### TASK-003 | rename kanban.md to todo.md
+**Priority**: Medium
+**Created**: 2025-12-10
 
 ## 👀 In Review
 

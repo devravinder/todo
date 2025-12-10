@@ -1834,9 +1834,10 @@
         });
 
         // Load kanban.md file
+        // kanban.md is renamed to todo.md
         async function loadKanbanFile() {
             try {
-                kanbanFileHandle = await directoryHandle.getFileHandle('kanban.md');
+                kanbanFileHandle = await directoryHandle.getFileHandle('todo.md');
                 const file = await kanbanFileHandle.getFile();
                 currentKanbanContent = await file.text();
 
@@ -1849,12 +1850,12 @@
                 // Only create default files if the file truly doesn't exist
                 if (error.name === 'NotFoundError') {
                     showNotification(t('notif.initializingFolder'), 'success');
-                    console.log('kanban.md not found, creating default files...');
+                    console.log('todo.md not found, creating default files...');
 
                     try {
-                        // Create kanban.md
+                        // Create todo.md
                         currentKanbanContent = createDefaultKanbanContent();
-                        kanbanFileHandle = await directoryHandle.getFileHandle('kanban.md', { create: true });
+                        kanbanFileHandle = await directoryHandle.getFileHandle('todo.md', { create: true });
                         const writable = await kanbanFileHandle.createWritable();
                         await writable.write(currentKanbanContent);
                         await writable.close();
@@ -1878,12 +1879,12 @@
                 } else {
                     // Different error (permissions, read error, etc.) - show error and don't overwrite
                     showNotification(t('notif.loadError') || 'Erreur lors du chargement du fichier', 'error');
-                    console.error('Error loading kanban.md:', error);
+                    console.error('Error loading todo.md:', error);
                 }
             }
         }
 
-        // Create default kanban.md content
+        // Create default todo.md content
         function createDefaultKanbanContent() {
             return `# Kanban Board
 
