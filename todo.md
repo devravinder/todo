@@ -18,6 +18,12 @@
 
 ## 📝 To Do
 
+## 🚀 In Progress
+
+## 👀 In Review
+
+## ✅ Done
+
 ### TASK-001 | Deploy As Static Site
 **Priority**: Low | **Category**: UI
 **Created**: 2025-12-10 | **Started**: 2025-12-10 | **Due**: 2025-12-10
@@ -28,16 +34,9 @@
 **Subtasks**:
 - [x] add subdomain
 - [x] rename task-manger.html to index.html
-- [ ] rename kanban.md to todo.md
+- [x] rename kanban.md to todo.md
 - [x] understand why we need archieve.md
 
-## 🚀 In Progress
-
 ### TASK-003 | rename kanban.md to todo.md
-**Priority**: Medium
 **Created**: 2025-12-10
-
-## 👀 In Review
-
-## ✅ Done
 
