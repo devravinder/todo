@@ -1,6 +1,6 @@
 # Kanban Board
 
-<!-- Config: Last Task ID: 1 -->
+<!-- Config: Last Task ID: 2 -->
 
 ## ⚙️ Configuration
 
@@ -26,10 +26,10 @@
 - deploy as a static website
 
 **Subtasks**:
-- [ ] add subdomain
-- [ ] rename task-manger.html to index.html
+- [x] add subdomain
+- [x] rename task-manger.html to index.html
 - [ ] rename kanban.md to todo.md
-- [ ] understand why we need archieve.md
+- [x] understand why we need archieve.md
 
 ## 🚀 In Progress
 
