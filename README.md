@@ -8,3 +8,8 @@ The following customizations are done with respoect to the original [ioniks](htt
 
 1. `task-manager.html` to `index.html`
 2. `kanban.md` to `todo.md`
+
+## Usage
+
+1. Visit: `todo.paravartech.com` or open `index.html` from this repo
+2. then select the folder of your choice

@@ -1,6 +1,6 @@
 # Kanban Board
 
-<!-- Config: Last Task ID: 3 -->
+<!-- Config: Last Task ID: 4 -->
 
 ## ⚙️ Configuration
 
@@ -17,6 +17,10 @@
 ---
 
 ## 📝 To Do
+
+### TASK-004 | Demo
+**Priority**: Critical
+**Created**: 2025-12-15
 
 ## 🚀 In Progress
 
