@@ -1,6 +1,7 @@
+import KanbanDashboard from "./components/KanbanDashboard";
 
 export default function App() {
   return (
-    <div className="text-red-500">App</div>
+    <KanbanDashboard/>
   )
 }
