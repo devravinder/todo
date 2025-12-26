@@ -14,7 +14,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
 
   return (
     <div
-      className={`flex flex-col gap-4 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow ${
+      className={`flex flex-col gap-6 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow ${
         isDragging ? "opacity-50 rotate-2" : ""
       }`}
     >
@@ -42,7 +42,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
         </p>
       )}
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-1">
           <span className="text-xs py-1 px-2 rounded-md bg-emerald-100 ">
             {task.Priority}
@@ -68,16 +68,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
         </div>
 
         {totalSubtasks > 0 && (
-          <div className="">
-            <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
-              <span>Subtasks</span>
-              <span>
-                {completedSubtasks}/{totalSubtasks}
-              </span>
-            </div>
-            <div className="w-full bg-slate-200 rounded-full h-1">
+          <div className="flex flex-row items-center gap-2">
+            <div className="flex-1 bg-slate-200 rounded-full h-1">
               <div
-                className="bg-blue-600 h-1 rounded-full transition-all"
+                className="bg-blue-600 h-full rounded-full transition-all"
                 style={{
                   width: `${
                     totalSubtasks > 0
@@ -87,6 +81,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
                 }}
               />
             </div>
+              <span className="text-xs text-slate-600">
+                {completedSubtasks}/{totalSubtasks}
+              </span>
           </div>
         )}
 
