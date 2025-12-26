@@ -1,4 +1,4 @@
-export const config = {
+export const defaultConfig = {
   Statuses: [
     "📝 To Do",
     "🚀 In Progress",
