@@ -1,0 +1,8 @@
+export const CLOSE = '⤫'
+export const ADD = '✚'
+export const SETTINGS='⚙️'
+export const DELETE='🗑️'
+export const USER='🙍🏻‍♂️'
+export const CALENDER='🗓️'
+export const CLOCK='⏰'
+export const EDIT="✏️"

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ADD, SETTINGS } from '../util/icons';
 
 interface HeaderProps {
   onNewTask: () => void;
@@ -19,15 +20,15 @@ const Header: React.FC<HeaderProps> = ({ onNewTask, onSettings }) => {
         <div className="flex items-center space-x-2">
           <button
             onClick={onNewTask}
-            className=" cursor-pointerinline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            className=" cursor-pointerinline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-none transition-colors"
           >
-            ✚ New Task
+            {ADD} New Task
           </button>
           <button
             onClick={onSettings}
             className=" cursor-pointer inline-flex items-center px-3 py-2 bg-slate-100 text-sm font-medium rounded-lg hover:bg-slate-200 "
           >
-            ⚙️
+            {SETTINGS}
           </button>
         </div>
       </div>

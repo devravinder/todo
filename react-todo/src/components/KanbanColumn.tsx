@@ -1,6 +1,6 @@
 import React from 'react';
 import TaskCard, { type Task } from './TaskCard';
-import { ADD } from '../icons';
+import { ADD } from '../util/icons';
 
 interface KanbanColumnProps {
   title: string;

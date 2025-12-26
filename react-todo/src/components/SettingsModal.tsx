@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CLOSE } from '../icons';
+import { ADD, CLOSE, DELETE } from '../util/icons';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -103,7 +103,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   onClick={addItem}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                  ➕
+                  {ADD}
                 </button>
               </div>
             </div>
@@ -120,7 +120,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     className="text-red-500 hover:text-red-700 focus:outline-none"
                     disabled={activeTabData.items.length <= 1}
                   >
-                    🗑️
+                    {DELETE}
                   </button>
                 </div>
               ))}

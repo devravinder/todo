@@ -266,7 +266,7 @@ export default function KanbanDashboard() {
     setTasks((prev) =>
       prev.map((task) => {
         if (task.Id === taskId) {
-          const updatedTask = { ...task, status: targetStatus };
+          const updatedTask:Task = { ...task, Status: targetStatus };
 
           // Update timestamps based on status
           if (targetStatus === config["Workflow Statuses"]["START_STATUS"] && !task.startedDate) {

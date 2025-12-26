@@ -1,5 +1,6 @@
 import React from "react";
 import { format } from "date-fns";
+import { CALENDER, CLOCK, EDIT, USER } from "../util/icons";
  
 interface TaskCardProps {
   task: Task;
@@ -27,7 +28,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
             }}
             className="cursor-pointer text-xs"
           >
-            ✏️
+            {EDIT}
           </button>
         </div>
         <h3 className="font-medium text-slate-800 text-md leading-tight line-clamp-1 flex-1">
@@ -48,7 +49,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
           </span>
           {task.AssignedTo && (
             <span className="text-xs py-1 px-2 rounded-md bg-purple-200  text-purple-600">
-              🙍🏻‍♂️@{task.AssignedTo}
+              {USER}@{task.AssignedTo}
             </span>
           )}
           {task.Tags.slice(0, 3).map((tag, index) => (
@@ -91,11 +92,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
 
         <div className="flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center">
-            🗓️ {format(task.createdDate, "dd-MMM-yyyy")}
+            {CALENDER} {format(task.createdDate, "dd-MMM-yyyy")}
           </div>
           {task.dueDate && (
             <div className="flex items-center text-orange-600">
-              ⏰ {format(task.dueDate, "dd-MMM-yyyy")}
+              {CLOCK} {format(task.dueDate, "dd-MMM-yyyy")}
             </div>
           )}
         </div>
