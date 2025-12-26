@@ -2,18 +2,22 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { defaultConfig } from "../util/constants";
 
+type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined
 type AppContextType = {
   config: TodoConfig;
   setConfig: (config: TodoConfig)=>void;
+  activeModal: ActiveModal
+  setActiveModal:(activeModal: ActiveModal)=>void
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [config, setConfig] = useState<TodoConfig>(defaultConfig);
+  const [activeModal, setActiveModal] = useState<ActiveModal>()
 
   return (
-    <AppContext.Provider value={{ config, setConfig }}>
+    <AppContext.Provider value={{ config, setConfig, activeModal, setActiveModal }}>
       {children}
     </AppContext.Provider>
   );
