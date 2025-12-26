@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ADD, CLOSE, DELETE } from "../util/icons";
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -13,8 +14,8 @@ interface TaskModalProps {
   priorities: string[];
 }
 
-const COMPLETED_TASK = "[x] ";
-const IN_COMPLETED_TASK = "[ ] ";
+const COMPLETED_TASK_PREFIX = "[x] ";
+const IN_COMPLETED_TASK_PREFIX = "[ ] ";
 const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
   onClose,
@@ -40,9 +41,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
     e.preventDefault();
     if (!formData.Title.trim()) return;
 
-    const taskData = {
+    const taskData:Task = {
       ...formData,
-      created: task?.createdDate || new Date(),
+      completedDate: task?.createdDate || new Date(),
+      Subtasks: subTasks.map(task=> task.completed ? `${COMPLETED_TASK_PREFIX}${task.text}` : `${IN_COMPLETED_TASK_PREFIX}${task.text}`)
     };
 
     onSave(taskData);
@@ -85,11 +87,11 @@ const TaskModal: React.FC<TaskModalProps> = ({
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormData(task);
-    setSubTasks(task.Subtasks.map(e=>{
-      if(e.includes(COMPLETED_TASK))
-      return ({text: e.replace(COMPLETED_TASK,""), completed: true})
-    else return ({text: e.replace(IN_COMPLETED_TASK,""), completed: true})
-    }))
+    setSubTasks(task.Subtasks?.map(e=>{
+      if(e.includes(COMPLETED_TASK_PREFIX))
+      return ({text: e.replace(COMPLETED_TASK_PREFIX,""), completed: true})
+    else return ({text: e.replace(IN_COMPLETED_TASK_PREFIX,""), completed: false})
+    }) || [])
     
   }, [task]);
 
@@ -106,7 +108,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
             onClick={handleClose}
             className="text-slate-400 hover:text-slate-600 focus:outline-none"
           >
-            🗙
+            {CLOSE}
           </button>
         </div>
 
@@ -271,7 +273,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                       className="grow px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                     <button type="button" onClick={() => removeSubtask(index)}>
-                      🗑️
+                      {DELETE}
                     </button>
                   </div>
                 ))}
@@ -286,7 +288,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                   className="grow px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
                 <button type="button" onClick={() => addSubtask()}>
-                  ➕
+                  {ADD}
                 </button>
               </div>
             </div>
