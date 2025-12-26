@@ -8,3 +8,4 @@ export const CLOCK = "⏰";
 export const EDIT = "✏️";
 export const ARCHIVE = "📦";
 export const FOLDER = "📂";
+export const CHECK='ꪜ'
