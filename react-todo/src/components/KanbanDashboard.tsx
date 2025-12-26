@@ -7,13 +7,8 @@ import SettingsModal from "./SettingsModal";
 import TaskModal from "./TaskModal";
 
 export default function KanbanDashboard() {
-  const {
-    activeModal,
-    setActiveModal,
-    config,
-    tasks,
-    editTask,
-  } = useAppContext();
+  const { activeModal, setActiveModal, config, tasks, changeStatus } =
+    useAppContext();
 
   const newTask = (status?: string): Task => {
     return {
@@ -50,7 +45,6 @@ export default function KanbanDashboard() {
     setActiveModal("TASK");
   };
 
-
   const handleDragStart = (e: React.DragEvent, task: Task) => {
     e.dataTransfer.setData("text/plain", task.Id!);
   };
@@ -63,25 +57,7 @@ export default function KanbanDashboard() {
     e.preventDefault();
     const taskId = e.dataTransfer.getData("text/plain");
 
-    const task = tasks.find((task) => task.Id === taskId);
-    if (task) {
-      const updatedTask: Task = { ...task, Status: targetStatus };
-
-      // Update timestamps based on status
-      if (
-        targetStatus === config["Workflow Statuses"]["START_STATUS"] &&
-        !task.startedDate
-      ) {
-        updatedTask.startedDate = new Date();
-      } else if (
-        targetStatus === config["Workflow Statuses"]["END_STATUS"] &&
-        !task.completedDate
-      ) {
-        updatedTask.completedDate = new Date();
-      }
-
-      editTask(taskId, updatedTask)
-    }
+    changeStatus(taskId, targetStatus);
   };
 
   const getTasksByStatus = (status: string) => {

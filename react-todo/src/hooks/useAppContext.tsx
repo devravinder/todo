@@ -12,7 +12,8 @@ type AppContextType = {
   tasks: Task[];
   addTask: (task: Task) => void;
   editTask: (id: string, task: Task) => void;
-  deleteTask: (taskId: string) => void
+  deleteTask: (taskId: string) => void;
+  changeStatus: (id: string, status: string) => void
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -177,7 +178,7 @@ const sampleTasks: Task[] = [
     Notes: "Cleanup done.",
     Status: defaultConfig.Statuses[4],
   },
-]
+];
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [config, setConfig] = useState<TodoConfig>(defaultConfig);
@@ -187,15 +188,45 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const addTask = (task: Task) => {
     setTasks((prev) => [
       ...prev,
-      { ...task, Id: `000${tasks.length + 1}`.slice(-3) },
+      {
+        ...task,
+        Id: `000${tasks.length + 1}`.slice(-3),
+        createdDate: new Date(),
+      },
     ]);
   };
 
-  const editTask = (id: string, task: Task) => {
-    setTasks((pre) =>
-      pre.map((old) => id === old.Id ? ({ ...old, ...task }) : old)
-    );
+  const editTask = (id: string, task: Partial<Task>) => {
+    const old = tasks.find((task) => task.Id === id);
+
+    if (old) {
+      const { Status: targetStatus } = task;
+      const { Status: currentStatus } = old;
+
+      // Update timestamps based on status
+      if (targetStatus !== currentStatus) {
+        switch (targetStatus) {
+          case config["Workflow Statuses"]["START_STATUS"]: {
+            task.startedDate = new Date();
+            break;
+          }
+
+          case config["Workflow Statuses"]["END_STATUS"]: {
+            task.completedDate = new Date();
+            break;
+          }
+        }
+      }
+
+      setTasks((pre) =>
+        pre.map((old) => (id === old.Id ? { ...old, ...task } : old))
+      );
+    }
   };
+
+  const changeStatus=(id: string, status: string)=>{
+        editTask(id, {Status:status})
+  }
 
   const deleteTask = (taskId: string) => {
     setTasks((prev) => prev.filter((task) => task.Id !== taskId));
@@ -211,7 +242,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         tasks,
         addTask,
         editTask,
-        deleteTask
+        deleteTask,
+        changeStatus
       }}
     >
       {children}
