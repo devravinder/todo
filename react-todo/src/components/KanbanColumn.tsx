@@ -1,5 +1,5 @@
 import React from 'react';
-import TaskCard, { type Task } from './TaskCard';
+import TaskCard from './TaskCard';
 import { ADD } from '../util/icons';
 
 interface KanbanColumnProps {
@@ -10,11 +10,13 @@ interface KanbanColumnProps {
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragStart: (e: React.DragEvent, task: Task) => void;
+  allowCreation?: boolean
 }
 
 const KanbanColumn: React.FC<KanbanColumnProps> = ({
   title,
   tasks,
+  allowCreation=true,
   onNewTask,
   onEditTask,
   onDrop,
@@ -30,12 +32,12 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
             {tasks.length}
           </span>
         </div>
-        <button
+        {allowCreation && <button
           onClick={onNewTask}
           className="text-slate-400 hover:text-slate-600 cursor-pointer"
         >
           {ADD}
-        </button>
+        </button>}
       </div>
       
       <div

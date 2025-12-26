@@ -4,6 +4,7 @@ import KanbanColumn from "./KanbanColumn";
 import TaskModal from "./TaskModal";
 import SettingsModal from "./SettingsModal";
 import { config } from "../util/constants";
+import ArchiveModel from "./ArchiveModel";
 
 const newTask = (status?: string): Task => {
   return {
@@ -11,7 +12,7 @@ const newTask = (status?: string): Task => {
     Status: status || config["Workflow Statuses"]["CREATE_STATUS"],
     Description: "",
     Notes: "",
-    Priority: config.Priorities[config.Priorities.length-1],
+    Priority: config.Priorities[config.Priorities.length - 1],
     createdDate: new Date(),
     dueDate: new Date(),
     Tags: [],
@@ -30,10 +31,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-12"),
     completedDate: new Date("2025-01-12"),
     Tags: config.Tags.slice(0, 2),
-    Subtasks: [
-      "[x] Create GitHub repo",
-      "[x] Add README.md",
-    ],
+    Subtasks: ["[x] Create GitHub repo", "[x] Add README.md"],
     Notes: "Initial setup completed successfully.",
     Status: config.Statuses[3],
   },
@@ -49,10 +47,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-15"),
     completedDate: undefined,
     Tags: [config.Tags[2], config.Tags[1]],
-    Subtasks: [
-      "[x] Create wireframes",
-      "[ ] Approve layout",
-    ],
+    Subtasks: ["[x] Create wireframes", "[ ] Approve layout"],
     Notes: "Waiting for feedback.",
     Status: config.Statuses[1],
   },
@@ -68,10 +63,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-14"),
     completedDate: undefined,
     Tags: [config.Tags[3], config.Tags[1]],
-    Subtasks: [
-      "[x] Define interface",
-      "[ ] Add validation",
-    ],
+    Subtasks: ["[x] Define interface", "[ ] Add validation"],
     Notes: "Schema almost done.",
     Status: config.Statuses[1],
   },
@@ -87,10 +79,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-16"),
     completedDate: undefined,
     Tags: [config.Tags[2], config.Tags[1]],
-    Subtasks: [
-      "[ ] Create list component",
-      "[ ] Map tasks",
-    ],
+    Subtasks: ["[ ] Create list component", "[ ] Map tasks"],
     Notes: "Blocked by API readiness.",
     Status: config.Statuses[0],
   },
@@ -106,10 +95,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-17"),
     completedDate: undefined,
     Tags: [config.Tags[1], config.Tags[2]],
-    Subtasks: [
-      "[ ] Implement drag logic",
-      "[ ] Persist order",
-    ],
+    Subtasks: ["[ ] Implement drag logic", "[ ] Persist order"],
     Notes: "",
     Status: config.Statuses[0],
   },
@@ -125,10 +111,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-18"),
     completedDate: undefined,
     Tags: [config.Tags[3]],
-    Subtasks: [
-      "[x] Fetch tasks API",
-      "[ ] Save updates",
-    ],
+    Subtasks: ["[x] Fetch tasks API", "[ ] Save updates"],
     Notes: "Auth pending.",
     Status: config.Statuses[1],
   },
@@ -144,10 +127,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-16"),
     completedDate: new Date("2025-01-16"),
     Tags: [config.Tags[2], config.Tags[5]],
-    Subtasks: [
-      "[x] Map priority colors",
-      "[x] Test UI",
-    ],
+    Subtasks: ["[x] Map priority colors", "[x] Test UI"],
     Notes: "Looks good.",
     Status: config.Statuses[3],
   },
@@ -163,10 +143,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-19"),
     completedDate: undefined,
     Tags: [config.Tags[7]],
-    Subtasks: [
-      "[ ] Test create task",
-      "[ ] Test status change",
-    ],
+    Subtasks: ["[ ] Test create task", "[ ] Test status change"],
     Notes: "",
     Status: config.Statuses[0],
   },
@@ -182,10 +159,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-18"),
     completedDate: undefined,
     Tags: [config.Tags[6]],
-    Subtasks: [
-      "[x] Update setup steps",
-      "[ ] Add screenshots",
-    ],
+    Subtasks: ["[x] Update setup steps", "[ ] Add screenshots"],
     Notes: "",
     Status: config.Statuses[2],
   },
@@ -201,10 +175,7 @@ const sampleTasks: Task[] = [
     dueDate: new Date("2025-01-18"),
     completedDate: new Date("2025-01-18"),
     Tags: [config.Tags[5]],
-    Subtasks: [
-      "[x] Filter completed tasks",
-      "[x] Move to archive",
-    ],
+    Subtasks: ["[x] Filter completed tasks", "[x] Move to archive"],
     Notes: "Cleanup done.",
     Status: config.Statuses[4],
   },
@@ -212,13 +183,15 @@ const sampleTasks: Task[] = [
 
 export default function KanbanDashboard() {
   const [tasks, setTasks] = useState<Task[]>(sampleTasks || []);
-  const [statuses, setStatuses] = useState(config.Statuses);
+  const [statuses, setStatuses] = useState(config.Statuses.filter(s=> s!=config["Workflow Statuses"].ARCHIVE_STATUS));
   const [users, setUsers] = useState(config.Users);
   const [tags, setTags] = useState(config.Tags);
   const [priorities, setPriorities] = useState(config.Priorities);
 
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
+
   const [editingTask, setEditingTask] = useState<Task>(() => newTask());
 
   const handleNewTask = (status: string) => {
@@ -266,12 +239,18 @@ export default function KanbanDashboard() {
     setTasks((prev) =>
       prev.map((task) => {
         if (task.Id === taskId) {
-          const updatedTask:Task = { ...task, Status: targetStatus };
+          const updatedTask: Task = { ...task, Status: targetStatus };
 
           // Update timestamps based on status
-          if (targetStatus === config["Workflow Statuses"]["START_STATUS"] && !task.startedDate) {
+          if (
+            targetStatus === config["Workflow Statuses"]["START_STATUS"] &&
+            !task.startedDate
+          ) {
             updatedTask.startedDate = new Date();
-          } else if (targetStatus === config["Workflow Statuses"]["END_STATUS"] && !task.completedDate) {
+          } else if (
+            targetStatus === config["Workflow Statuses"]["END_STATUS"] &&
+            !task.completedDate
+          ) {
             updatedTask.completedDate = new Date();
           }
 
@@ -291,9 +270,10 @@ export default function KanbanDashboard() {
       <Header
         onNewTask={() => handleNewTask(config.Statuses[0])}
         onSettings={() => setIsSettingsModalOpen(true)}
+        onArchive={() => setArchiveModalOpen(true)}
       />
 
-      <main className="flex gap-4 overflow-x-auto p-8">
+      <main className="flex justify-center gap-4 overflow-x-auto p-8">
         {statuses.map((status) => (
           <KanbanColumn
             key={status}
@@ -307,6 +287,25 @@ export default function KanbanDashboard() {
           />
         ))}
       </main>
+
+      <ArchiveModel isOpen={isArchiveModalOpen} onClose={() => setArchiveModalOpen(false)}>
+        <KanbanColumn
+          title={config["Workflow Statuses"]["ARCHIVE_STATUS"]}
+          tasks={getTasksByStatus(
+            config["Workflow Statuses"]["ARCHIVE_STATUS"]
+          )}
+          onNewTask={() =>
+            handleNewTask(config["Workflow Statuses"]["ARCHIVE_STATUS"])
+          }
+          onEditTask={handleEditTask}
+          onDrop={(e) =>
+            handleDrop(e, config["Workflow Statuses"]["ARCHIVE_STATUS"])
+          }
+          onDragOver={handleDragOver}
+          onDragStart={handleDragStart}
+          allowCreation={false}
+        />
+      </ArchiveModel>
 
       <TaskModal
         isOpen={isTaskModalOpen}
