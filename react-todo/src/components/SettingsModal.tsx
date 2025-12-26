@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
+import { CLOSE } from '../icons';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -60,9 +60,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           <h2 className="text-lg font-semibold text-slate-800">Settings</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 focus:outline-none"
+            className="text-slate-500 text-lg hover:text-slate-700 focus:outline-none"
           >
-            <X className="w-5 h-5" />
+            {CLOSE}
           </button>
         </div>
 
@@ -103,7 +103,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   onClick={addItem}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                  <Plus className="w-4 h-4" />
+                  ➕
                 </button>
               </div>
             </div>
@@ -120,7 +120,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     className="text-red-500 hover:text-red-700 focus:outline-none"
                     disabled={activeTabData.items.length <= 1}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    🗑️
                   </button>
                 </div>
               ))}

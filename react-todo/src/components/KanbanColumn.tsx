@@ -1,13 +1,12 @@
 import React from 'react';
-import { Plus } from 'lucide-react';
 import TaskCard, { type Task } from './TaskCard';
+import { ADD } from '../icons';
 
 interface KanbanColumnProps {
   title: string;
   tasks: Task[];
   onNewTask: () => void;
   onEditTask: (task: Task) => void;
-  onDeleteTask: (taskId: string) => void;
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragStart: (e: React.DragEvent, task: Task) => void;
@@ -18,14 +17,13 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   tasks,
   onNewTask,
   onEditTask,
-  onDeleteTask,
   onDrop,
   onDragOver,
   onDragStart
 }) => {
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4 border-b border-slate-200">
+    <div className="flex flex-col h-full overflow-y-auto shrink-0 w-full sm:w-80 rounded-lg border border-slate-300">
+      <div className="sticky flex items-center justify-between bg-white rounded-t-lg p-4 border-b border-slate-300">
         <div className="flex items-center space-x-2">
           <h2 className="font-semibold text-slate-800">{title}</h2>
           <span className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-full">
@@ -34,9 +32,9 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
         </div>
         <button
           onClick={onNewTask}
-          className="text-slate-400 hover:text-slate-600 focus:outline-none focus:text-slate-600"
+          className="text-slate-400 hover:text-slate-600 cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
+          {ADD}
         </button>
       </div>
       
@@ -47,14 +45,13 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
       >
         {tasks.map((task) => (
           <div
-            key={task.id}
+            key={task.Id}
             draggable
             onDragStart={(e) => onDragStart(e, task)}
           >
             <TaskCard
               task={task}
               onEdit={onEditTask}
-              onDelete={onDeleteTask}
             />
           </div>
         ))}

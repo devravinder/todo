@@ -1,106 +1,228 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import Header from './Header';
-import KanbanColumn from './KanbanColumn';
-import TaskModal from './TaskModal';
-import SettingsModal from './SettingsModal';
-import { type Task } from './TaskCard';
+import React, { useState } from "react";
+import Header from "./Header";
+import KanbanColumn from "./KanbanColumn";
+import TaskModal from "./TaskModal";
+import SettingsModal from "./SettingsModal";
+import { config } from "../util/constants";
+
+const newTask = (status?: string): Task => {
+  return {
+    Title: "",
+    Status: status || config["Workflow Statuses"]["CREATE_STATUS"],
+    Description: "",
+    Notes: "",
+    Priority: config.Priorities[config.Priorities.length-1],
+    createdDate: new Date(),
+    dueDate: new Date(),
+    Tags: [],
+    Subtasks: [],
+  };
+};
+const sampleTasks: Task[] = [
+  {
+    Id: "001",
+    Title: "Setup Project Repository",
+    Description: "Initialize Git repository and base project structure.",
+    Priority: config.Priorities[0],
+    AssignedTo: config.Users[0],
+    createdDate: new Date("2025-01-10"),
+    startedDate: new Date("2025-01-10"),
+    dueDate: new Date("2025-01-12"),
+    completedDate: new Date("2025-01-12"),
+    Tags: config.Tags.slice(0, 2),
+    Subtasks: [
+      "[x] Create GitHub repo",
+      "[x] Add README.md",
+    ],
+    Notes: "Initial setup completed successfully.",
+    Status: config.Statuses[3],
+  },
+
+  {
+    Id: "002",
+    Title: "Design Application Layout",
+    Description: "Create layout wireframes and UI structure.",
+    Priority: config.Priorities[1],
+    AssignedTo: config.Users[1],
+    createdDate: new Date("2025-01-11"),
+    startedDate: new Date("2025-01-12"),
+    dueDate: new Date("2025-01-15"),
+    completedDate: undefined,
+    Tags: [config.Tags[2], config.Tags[1]],
+    Subtasks: [
+      "[x] Create wireframes",
+      "[ ] Approve layout",
+    ],
+    Notes: "Waiting for feedback.",
+    Status: config.Statuses[1],
+  },
+
+  {
+    Id: "003",
+    Title: "Implement Task Model",
+    Description: "Create task schema and validation logic.",
+    Priority: config.Priorities[2],
+    AssignedTo: config.Users[0],
+    createdDate: new Date("2025-01-12"),
+    startedDate: new Date("2025-01-12"),
+    dueDate: new Date("2025-01-14"),
+    completedDate: undefined,
+    Tags: [config.Tags[3], config.Tags[1]],
+    Subtasks: [
+      "[x] Define interface",
+      "[ ] Add validation",
+    ],
+    Notes: "Schema almost done.",
+    Status: config.Statuses[1],
+  },
+
+  {
+    Id: "004",
+    Title: "Create Task List UI",
+    Description: "Render task list with statuses.",
+    Priority: config.Priorities[1],
+    AssignedTo: config.Users[0],
+    createdDate: new Date("2025-01-13"),
+    startedDate: undefined,
+    dueDate: new Date("2025-01-16"),
+    completedDate: undefined,
+    Tags: [config.Tags[2], config.Tags[1]],
+    Subtasks: [
+      "[ ] Create list component",
+      "[ ] Map tasks",
+    ],
+    Notes: "Blocked by API readiness.",
+    Status: config.Statuses[0],
+  },
+
+  {
+    Id: "005",
+    Title: "Add Drag and Drop",
+    Description: "Enable moving tasks between statuses.",
+    Priority: config.Priorities[1],
+    AssignedTo: config.Users[2],
+    createdDate: new Date("2025-01-13"),
+    startedDate: undefined,
+    dueDate: new Date("2025-01-17"),
+    completedDate: undefined,
+    Tags: [config.Tags[1], config.Tags[2]],
+    Subtasks: [
+      "[ ] Implement drag logic",
+      "[ ] Persist order",
+    ],
+    Notes: "",
+    Status: config.Statuses[0],
+  },
+
+  {
+    Id: "006",
+    Title: "Backend API Integration",
+    Description: "Connect frontend with backend APIs.",
+    Priority: config.Priorities[1],
+    AssignedTo: config.Users[0],
+    createdDate: new Date("2025-01-14"),
+    startedDate: new Date("2025-01-15"),
+    dueDate: new Date("2025-01-18"),
+    completedDate: undefined,
+    Tags: [config.Tags[3]],
+    Subtasks: [
+      "[x] Fetch tasks API",
+      "[ ] Save updates",
+    ],
+    Notes: "Auth pending.",
+    Status: config.Statuses[1],
+  },
+
+  {
+    Id: "007",
+    Title: "Add Priority Colors",
+    Description: "Apply color coding based on priority.",
+    Priority: config.Priorities[3],
+    AssignedTo: config.Users[1],
+    createdDate: new Date("2025-01-15"),
+    startedDate: new Date("2025-01-15"),
+    dueDate: new Date("2025-01-16"),
+    completedDate: new Date("2025-01-16"),
+    Tags: [config.Tags[2], config.Tags[5]],
+    Subtasks: [
+      "[x] Map priority colors",
+      "[x] Test UI",
+    ],
+    Notes: "Looks good.",
+    Status: config.Statuses[3],
+  },
+
+  {
+    Id: "008",
+    Title: "Write Unit Tests",
+    Description: "Add tests for task logic.",
+    Priority: config.Priorities[2],
+    AssignedTo: config.Users[0],
+    createdDate: new Date("2025-01-16"),
+    startedDate: undefined,
+    dueDate: new Date("2025-01-19"),
+    completedDate: undefined,
+    Tags: [config.Tags[7]],
+    Subtasks: [
+      "[ ] Test create task",
+      "[ ] Test status change",
+    ],
+    Notes: "",
+    Status: config.Statuses[0],
+  },
+
+  {
+    Id: "009",
+    Title: "Documentation Update",
+    Description: "Update README with usage instructions.",
+    Priority: config.Priorities[3],
+    AssignedTo: config.Users[2],
+    createdDate: new Date("2025-01-17"),
+    startedDate: new Date("2025-01-17"),
+    dueDate: new Date("2025-01-18"),
+    completedDate: undefined,
+    Tags: [config.Tags[6]],
+    Subtasks: [
+      "[x] Update setup steps",
+      "[ ] Add screenshots",
+    ],
+    Notes: "",
+    Status: config.Statuses[2],
+  },
+
+  {
+    Id: "010",
+    Title: "Archive Old Tasks",
+    Description: "Move completed tasks to archive.",
+    Priority: config.Priorities[3],
+    AssignedTo: config.Users[1],
+    createdDate: new Date("2025-01-18"),
+    startedDate: new Date("2025-01-18"),
+    dueDate: new Date("2025-01-18"),
+    completedDate: new Date("2025-01-18"),
+    Tags: [config.Tags[5]],
+    Subtasks: [
+      "[x] Filter completed tasks",
+      "[x] Move to archive",
+    ],
+    Notes: "Cleanup done.",
+    Status: config.Statuses[4],
+  },
+];
 
 export default function KanbanDashboard() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [groups, setGroups] = useState(['Todo', 'In Progress', 'Done', 'Archive']);
-  const [users, setUsers] = useState(['john', 'sarah', 'mike', 'emma']);
-  const [tags, setTags] = useState(['bugs', 'feature', 'urgent', 'enhancement', 'documentation']);
-  const [priorities, setPriorities] = useState(['Low', 'Medium', 'High']);
-  
+  const [tasks, setTasks] = useState<Task[]>(sampleTasks || []);
+  const [statuses, setStatuses] = useState(config.Statuses);
+  const [users, setUsers] = useState(config.Users);
+  const [tags, setTags] = useState(config.Tags);
+  const [priorities, setPriorities] = useState(config.Priorities);
+
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [newTaskStatus, setNewTaskStatus] = useState('Todo');
+  const [editingTask, setEditingTask] = useState<Task>(() => newTask());
 
-  // Load data from localStorage on mount
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('kanban-tasks');
-    const savedGroups = localStorage.getItem('kanban-groups');
-    const savedUsers = localStorage.getItem('kanban-users');
-    const savedTags = localStorage.getItem('kanban-tags');
-    const savedPriorities = localStorage.getItem('kanban-priorities');
-
-    if (savedTasks) {
-      const parsedTasks = JSON.parse(savedTasks).map((task: any) => ({
-        ...task,
-        created: new Date(task.created),
-        started: task.started ? new Date(task.started) : undefined,
-        due: task.due ? new Date(task.due) : undefined,
-        completed: task.completed ? new Date(task.completed) : undefined
-      }));
-      setTasks(parsedTasks);
-    } else {
-      // Initialize with sample data
-      const sampleTasks: Task[] = [
-        {
-          id: '1',
-          title: 'Design user interface mockups',
-          description: 'Create wireframes and high-fidelity mockups for the new dashboard',
-          priority: 'High',
-          assignedTo: 'sarah',
-          created: new Date('2025-01-01'),
-          due: new Date('2025-01-15'),
-          tags: ['design', 'ui'],
-          subtasks: [
-            { id: '1', text: 'Create wireframes', completed: true },
-            { id: '2', text: 'Design high-fidelity mockups', completed: false }
-          ],
-          notes: 'Focus on mobile-first approach',
-          status: 'In Progress'
-        },
-        {
-          id: '2',
-          title: 'Fix login authentication bug',
-          description: 'Users are unable to login with social media accounts',
-          priority: 'High',
-          assignedTo: 'john',
-          created: new Date('2025-01-02'),
-          due: new Date('2025-01-10'),
-          tags: ['bugs', 'urgent'],
-          subtasks: [],
-          notes: 'Check OAuth configuration',
-          status: 'Todo'
-        }
-      ];
-      setTasks(sampleTasks);
-    }
-
-    if (savedGroups) setGroups(JSON.parse(savedGroups));
-    if (savedUsers) setUsers(JSON.parse(savedUsers));
-    if (savedTags) setTags(JSON.parse(savedTags));
-    if (savedPriorities) setPriorities(JSON.parse(savedPriorities));
-  }, []);
-
-  // Save to localStorage whenever data changes
-  useEffect(() => {
-    localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
-    localStorage.setItem('kanban-groups', JSON.stringify(groups));
-  }, [groups]);
-
-  useEffect(() => {
-    localStorage.setItem('kanban-users', JSON.stringify(users));
-  }, [users]);
-
-  useEffect(() => {
-    localStorage.setItem('kanban-tags', JSON.stringify(tags));
-  }, [tags]);
-
-  useEffect(() => {
-    localStorage.setItem('kanban-priorities', JSON.stringify(priorities));
-  }, [priorities]);
-
-  const handleNewTask = (status?: string) => {
-    setNewTaskStatus(status || 'Todo');
-    setEditingTask(null);
+  const handleNewTask = (status: string) => {
+    setEditingTask(newTask(status));
     setIsTaskModalOpen(true);
   };
 
@@ -109,42 +231,28 @@ export default function KanbanDashboard() {
     setIsTaskModalOpen(true);
   };
 
-  const handleSaveTask = (taskData: Partial<Task>) => {
-    if (editingTask) {
-      // Update existing task
-      setTasks(prev => prev.map(task => 
-        task.id === editingTask.id 
-          ? { ...task, ...taskData } as Task
-          : task
-      ));
-      toast.success('Task updated successfully');
+  const handleSaveTask = (taskData: Task) => {
+    if (taskData.Id) {
+      setTasks((pre) =>
+        pre.map((task) =>
+          task.Id === taskData.Id ? ({ ...task, ...taskData } as Task) : task
+        )
+      );
     } else {
-      // Create new task
-      const newTask: Task = {
-        id: crypto.randomUUID(),
-        title: taskData.title || '',
-        description: taskData.description || '',
-        priority: (taskData.priority as 'Low' | 'Medium' | 'High') || 'Medium',
-        assignedTo: taskData.assignedTo || '',
-        created: new Date(),
-        due: taskData.due,
-        tags: taskData.tags || [],
-        subtasks: taskData.subtasks || [],
-        notes: taskData.notes || '',
-        status: taskData.status || newTaskStatus
-      };
-      setTasks(prev => [...prev, newTask]);
-      toast.success('Task created successfully');
+      setTasks((prev) => [
+        ...prev,
+        { ...taskData, Id: `000${tasks.length + 1}`.slice(-3) },
+      ]);
     }
   };
 
   const handleDeleteTask = (taskId: string) => {
-    setTasks(prev => prev.filter(task => task.id !== taskId));
-    toast.success('Task deleted successfully');
+    setTasks((prev) => prev.filter((task) => task.Id !== taskId));
+    setIsTaskModalOpen(false);
   };
 
   const handleDragStart = (e: React.DragEvent, task: Task) => {
-    e.dataTransfer.setData('text/plain', task.id);
+    e.dataTransfer.setData("text/plain", task.Id!);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -153,63 +261,63 @@ export default function KanbanDashboard() {
 
   const handleDrop = (e: React.DragEvent, targetStatus: string) => {
     e.preventDefault();
-    const taskId = e.dataTransfer.getData('text/plain');
-    
-    setTasks(prev => prev.map(task => {
-      if (task.id === taskId) {
-        const updatedTask = { ...task, status: targetStatus };
-        
-        // Update timestamps based on status
-        if (targetStatus === 'In Progress' && !task.started) {
-          updatedTask.started = new Date();
-        } else if (targetStatus === 'Done' && !task.completed) {
-          updatedTask.completed = new Date();
+    const taskId = e.dataTransfer.getData("text/plain");
+
+    setTasks((prev) =>
+      prev.map((task) => {
+        if (task.Id === taskId) {
+          const updatedTask = { ...task, status: targetStatus };
+
+          // Update timestamps based on status
+          if (targetStatus === config["Workflow Statuses"]["START_STATUS"] && !task.startedDate) {
+            updatedTask.startedDate = new Date();
+          } else if (targetStatus === config["Workflow Statuses"]["END_STATUS"] && !task.completedDate) {
+            updatedTask.completedDate = new Date();
+          }
+
+          return updatedTask;
         }
-        
-        return updatedTask;
-      }
-      return task;
-    }));
-    
-    toast.success('Task moved successfully');
+        return task;
+      })
+    );
   };
 
   const getTasksByStatus = (status: string) => {
-    return tasks.filter(task => task.status === status);
+    return tasks.filter((task) => task.Status === status);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Header 
-        onNewTask={() => handleNewTask()}
+    <div className="min-h-screen bg-slate-100 flex flex-col gap-4">
+      <Header
+        onNewTask={() => handleNewTask(config.Statuses[0])}
         onSettings={() => setIsSettingsModalOpen(true)}
       />
-      
-      <main className="max-w-7xl mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 h-[calc(100vh-120px)]">
-          {groups.map(group => (
-            <div key={group} className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-              <KanbanColumn
-                title={group}
-                tasks={getTasksByStatus(group)}
-                onNewTask={() => handleNewTask(group)}
-                onEditTask={handleEditTask}
-                onDeleteTask={handleDeleteTask}
-                onDrop={(e) => handleDrop(e, group)}
-                onDragOver={handleDragOver}
-                onDragStart={handleDragStart}
-              />
-            </div>
-          ))}
-        </div>
+
+      <main className="flex gap-4 overflow-x-auto p-8">
+        {statuses.map((status) => (
+          <KanbanColumn
+            key={status}
+            title={status}
+            tasks={getTasksByStatus(status)}
+            onNewTask={() => handleNewTask(status)}
+            onEditTask={handleEditTask}
+            onDrop={(e) => handleDrop(e, status)}
+            onDragOver={handleDragOver}
+            onDragStart={handleDragStart}
+          />
+        ))}
       </main>
 
       <TaskModal
         isOpen={isTaskModalOpen}
-        onClose={() => setIsTaskModalOpen(false)}
+        onClose={() => {
+          setIsTaskModalOpen(false);
+          setEditingTask(newTask());
+        }}
+        onDeleteTask={handleDeleteTask}
         onSave={handleSaveTask}
         task={editingTask}
-        groups={groups}
+        statuses={statuses}
         users={users}
         tags={tags}
         priorities={priorities}
@@ -218,11 +326,11 @@ export default function KanbanDashboard() {
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
-        groups={groups}
+        groups={statuses}
         users={users}
         tags={tags}
         priorities={priorities}
-        onUpdateGroups={setGroups}
+        onUpdateGroups={setStatuses}
         onUpdateUsers={setUsers}
         onUpdateTags={setTags}
         onUpdatePriorities={setPriorities}

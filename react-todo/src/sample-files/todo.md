@@ -1,0 +1,194 @@
+
+# Todo
+
+## Tasks
+
+### ✅ Done
+
+#### 007 | Add Priority Colors
+
+- Id: 007
+- Title: Add Priority Colors
+- Description: Apply color coding based on priority.
+- Priority: 🟢 Low
+- AssignedTo: Reddy
+- createdDate: 2025-01-15T00:00:00.000Z
+- startedDate: 2025-01-15T00:00:00.000Z
+- dueDate: 2025-01-16T00:00:00.000Z
+- completedDate: 2025-01-16T00:00:00.000Z
+- Notes: Looks good.
+- Status: ✅ Done
+
+##### Tags
+
+- #ui
+- #refactor
+
+##### Subtasks
+
+- [x] Map priority colors
+- [x] Test UI
+
+### 🚀 In Progress
+
+#### 006 | Backend API Integration
+
+- Id: 006
+- Title: Backend API Integration
+- Description: Connect frontend with backend APIs.
+- Priority: 🟠 High
+- AssignedTo: Ravinder
+- createdDate: 2025-01-14T00:00:00.000Z
+- startedDate: 2025-01-15T00:00:00.000Z
+- dueDate: 2025-01-18T00:00:00.000Z
+- Notes: Auth pending.
+- Status: 🚀 In Progress
+
+##### Tags
+
+- #backend
+
+##### Subtasks
+
+- [x] Fetch tasks API
+- [ ] Save updates
+
+### 📝 To Do
+
+#### 008 | Write Unit Tests
+
+- Id: 008
+- Title: Write Unit Tests
+- Description: Add tests for task logic.
+- Priority: 🟡 Medium
+- AssignedTo: Ravinder
+- createdDate: 2025-01-16T00:00:00.000Z
+- dueDate: 2025-01-19T00:00:00.000Z
+- Status: 📝 To Do
+
+##### Tags
+
+- #test
+
+##### Subtasks
+
+- [ ] Test create task
+- [ ] Test status change
+
+### 👀 In Review
+
+#### 009 | Documentation Update
+
+- Id: 009
+- Title: Documentation Update
+- Description: Update README with usage instructions.
+- Priority: 🟢 Low
+- createdDate: 2025-01-17T00:00:00.000Z
+- startedDate: 2025-01-17T00:00:00.000Z
+- dueDate: 2025-01-18T00:00:00.000Z
+- Status: 👀 In Review
+
+##### Tags
+
+- #docs
+
+##### Subtasks
+
+- [x] Update setup steps
+- [ ] Add screenshots
+
+### 📦 Archives
+
+#### 010 | Archive Old Tasks
+
+- Id: 010
+- Title: Archive Old Tasks
+- Description: Move completed tasks to archive.
+- Priority: 🟢 Low
+- AssignedTo: Reddy
+- createdDate: 2025-01-18T00:00:00.000Z
+- startedDate: 2025-01-18T00:00:00.000Z
+- dueDate: 2025-01-18T00:00:00.000Z
+- completedDate: 2025-01-18T00:00:00.000Z
+- Notes: Cleanup done.
+- Status: 📦 Archives
+
+##### Tags
+
+- #refactor
+
+##### Subtasks
+
+- [x] Filter completed tasks
+- [x] Move to archive
+
+## ⚙️ Configuration
+
+### Statuses
+
+- 📝 To Do
+- 🚀 In Progress
+- 👀 In Review
+- ✅ Done
+- 📦 Archives
+
+### Categories
+
+- Frontend
+- Backend
+- Design
+- DevOps
+- Tests
+- Documentation
+
+### Users
+
+- Ravinder
+- Reddy
+
+### Priorities
+
+- 🔴 Critical
+- 🟠 High
+- 🟡 Medium
+- 🟢 Low
+
+### Tags
+
+- #bug
+- #feature
+- #ui
+- #backend
+- #urgent
+- #refactor
+- #docs
+- #test
+
+### Workflow Statuses
+
+- CREATE_STATUS: 📝 To Do
+- START_STATUS: 🚀 In Progress
+- END_STATUS: ✅ Done
+- ARCHIVE_STATUS: 📦 Archives
+
+### Priority Colors
+
+#### 🔴 Critical
+
+- text-color: #fb542b
+- bg-color: #fb542b
+
+##### 🟠 High
+
+- text-color: #fb542b
+- bg-color: #fb542b
+
+#### 🟡 Medium
+
+- text-color: #fb542b
+- bg-color: #fb542b
+
+#### 🟢 Low
+
+- text-color: #fb542b
+- bg-color: #fb542b

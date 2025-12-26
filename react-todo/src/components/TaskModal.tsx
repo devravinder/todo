@@ -1,119 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
-import { type Task } from './TaskCard';
+import React, { useEffect, useState } from "react";
 
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (task: Partial<Task>) => void;
-  task?: Task | null;
-  groups: string[];
+  onSave: (task: Task) => void;
+  onDeleteTask: (taskId: string) => void;
+
+  task: Task;
+  statuses: string[];
   users: string[];
   tags: string[];
   priorities: string[];
 }
 
+const COMPLETED_TASK = "[x] ";
+const IN_COMPLETED_TASK = "[ ] ";
 const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
   onClose,
   onSave,
+  onDeleteTask,
   task,
-  groups,
+  statuses,
   users,
   tags,
-  priorities
+  priorities,
 }) => {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    priority: 'Medium',
-    assignedTo: '',
-    due: '',
-    tags: [] as string[],
-    subtasks: [] as { id: string; text: string; completed: boolean }[],
-    notes: '',
-    status: 'Todo'
-  });
+  const [formData, setFormData] = useState<Task>(task);
+  const [subTasks, setSubTasks] = useState<
+    { text: string; completed: boolean }[]
+  >([]);
+  const [newSubTask, setNewSubTask] = useState("");
 
-  useEffect(() => {
-    if (task) {
-      setFormData({
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        assignedTo: task.assignedTo,
-        due: task.due ? task.due.toISOString().split('T')[0] : '',
-        tags: task.tags,
-        subtasks: task.subtasks,
-        notes: task.notes,
-        status: task.status
-      });
-    } else {
-      setFormData({
-        title: '',
-        description: '',
-        priority: 'Medium',
-        assignedTo: '',
-        due: '',
-        tags: [],
-        subtasks: [],
-        notes: '',
-        status: 'Todo'
-      });
-    }
-  }, [task]);
-
+  const handleClose = () => {
+    setNewSubTask("");
+    onClose();
+  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title.trim()) return;
+    if (!formData.Title.trim()) return;
 
-    const taskData: Partial<Task> = {
+    const taskData = {
       ...formData,
-      due: formData.due ? new Date(formData.due) : undefined,
-      id: task?.id || crypto.randomUUID(),
-      created: task?.created || new Date()
+      created: task?.createdDate || new Date(),
     };
 
     onSave(taskData);
-    onClose();
+    handleClose();
   };
 
   const addSubtask = () => {
-    setFormData(prev => ({
-      ...prev,
-      subtasks: [...prev.subtasks, { id: crypto.randomUUID(), text: '', completed: false }]
-    }));
+    if (!newSubTask.trim()) return;
+    setSubTasks((prev) => [...prev, { text: newSubTask, completed: false }]);
+    setNewSubTask("");
   };
 
-  const updateSubtask = (id: string, text: string) => {
-    setFormData(prev => ({
-      ...prev,
-      subtasks: prev.subtasks.map(st => st.id === id ? { ...st, text } : st)
-    }));
+  const updateSubtask = (index: number, text: string) => {
+    setSubTasks((pre) =>
+      pre.map((st, i) => (i === index ? { ...st, text } : st))
+    );
   };
 
-  const toggleSubtask = (id: string) => {
-    setFormData(prev => ({
-      ...prev,
-      subtasks: prev.subtasks.map(st => st.id === id ? { ...st, completed: !st.completed } : st)
-    }));
+  const toggleSubtask = (index: number) => {
+    setSubTasks((pre) =>
+      pre.map((st, i) =>
+        i === index ? { ...st, completed: !st.completed } : st
+      )
+    );
   };
 
-  const removeSubtask = (id: string) => {
-    setFormData(prev => ({
-      ...prev,
-      subtasks: prev.subtasks.filter(st => st.id !== id)
-    }));
+  const removeSubtask = (index: number) => {
+    setSubTasks((pre) => pre.filter((_, i) => i !== index));
   };
 
   const toggleTag = (tag: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.includes(tag)
-        ? prev.tags.filter(t => t !== tag)
-        : [...prev.tags, tag]
+      Tags: prev.Tags.includes(tag)
+        ? prev.Tags.filter((t) => t !== tag)
+        : [...prev.Tags, tag],
     }));
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFormData(task);
+    setSubTasks(task.Subtasks.map(e=>{
+      if(e.includes(COMPLETED_TASK))
+      return ({text: e.replace(COMPLETED_TASK,""), completed: true})
+    else return ({text: e.replace(IN_COMPLETED_TASK,""), completed: true})
+    }))
+    
+  }, [task]);
 
   if (!isOpen) return null;
 
@@ -122,13 +100,13 @@ const TaskModal: React.FC<TaskModalProps> = ({
       <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-800">
-            {task ? 'Edit Task' : 'New Task'}
+            {task.Id ? "Edit Task" : "New Task"}
           </h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-slate-400 hover:text-slate-600 focus:outline-none"
           >
-            <X className="w-5 h-5" />
+            🗙
           </button>
         </div>
 
@@ -139,8 +117,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
             </label>
             <input
               type="text"
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              value={formData.Title}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, Title: e.target.value }))
+              }
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
@@ -151,8 +131,13 @@ const TaskModal: React.FC<TaskModalProps> = ({
               Description
             </label>
             <textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              value={formData.Description}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  Description: e.target.value,
+                }))
+              }
               rows={3}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
@@ -164,12 +149,16 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 Priority
               </label>
               <select
-                value={formData.priority}
-                onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value }))}
+                value={formData.Priority}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, Priority: e.target.value }))
+                }
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                {priorities.map(priority => (
-                  <option key={priority} value={priority}>{priority}</option>
+                {priorities.map((priority) => (
+                  <option key={priority} value={priority}>
+                    {priority}
+                  </option>
                 ))}
               </select>
             </div>
@@ -179,13 +168,20 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 Assigned To
               </label>
               <select
-                value={formData.assignedTo}
-                onChange={(e) => setFormData(prev => ({ ...prev, assignedTo: e.target.value }))}
+                value={formData.AssignedTo}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    AssignedTo: e.target.value,
+                  }))
+                }
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Unassigned</option>
-                {users.map(user => (
-                  <option key={user} value={user}>{user}</option>
+                {users.map((user) => (
+                  <option key={user} value={user}>
+                    {user}
+                  </option>
                 ))}
               </select>
             </div>
@@ -196,24 +192,34 @@ const TaskModal: React.FC<TaskModalProps> = ({
               </label>
               <input
                 type="date"
-                value={formData.due}
-                onChange={(e) => setFormData(prev => ({ ...prev, due: e.target.value }))}
+                value={
+                  (formData.dueDate || new Date())?.toISOString().split("T")[0]
+                }
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    dueDate: e.target.valueAsDate || new Date(),
+                  }))
+                }
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
-
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Status
             </label>
             <select
-              value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
+              value={formData.Status}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, Status: e.target.value }))
+              }
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              {groups.map(group => (
-                <option key={group} value={group}>{group}</option>
+              {statuses.map((group) => (
+                <option key={group} value={group}>
+                  {group}
+                </option>
               ))}
             </select>
           </div>
@@ -223,62 +229,66 @@ const TaskModal: React.FC<TaskModalProps> = ({
               Tags
             </label>
             <div className="flex flex-wrap gap-2">
-              {tags.map(tag => (
+              {tags.map((tag) => (
                 <button
                   key={tag}
                   type="button"
                   onClick={() => toggleTag(tag)}
                   className={`px-3 py-1 text-sm rounded-full border transition-colors ${
-                    formData.tags.includes(tag)
-                      ? 'bg-indigo-100 border-indigo-300 text-indigo-700'
-                      : 'bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'
+                    formData.Tags.includes(tag)
+                      ? "bg-indigo-100 border-indigo-300 text-indigo-700"
+                      : "bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  #{tag}
+                  {tag}
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex flex-col gap-2 items-start justify-between mb-2">
               <label className="block text-sm font-medium text-slate-700">
                 Subtasks
               </label>
-              <button
-                type="button"
-                onClick={addSubtask}
-                className="text-blue-600 hover:text-blue-700 text-sm flex items-center"
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                Add
-              </button>
-            </div>
-            <div className="space-y-2">
-              {formData.subtasks.map((subtask) => (
-                <div key={subtask.id} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={subtask.completed}
-                    onChange={() => toggleSubtask(subtask.id)}
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <input
-                    type="text"
-                    value={subtask.text}
-                    onChange={(e) => updateSubtask(subtask.id, e.target.value)}
-                    placeholder="Subtask description"
-                    className="flex-1 px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeSubtask(subtask.id)}
-                    className="text-red-500 hover:text-red-700"
+              <div className="space-y-2 w-full">
+                {subTasks.map((subtask, index) => (
+                  <div
+                    key={`subtask.${index}`}
+                    className="w-full flex flex-row items-center space-x-2"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
+                    <input
+                      type="checkbox"
+                      checked={subtask.completed}
+                      onChange={() => toggleSubtask(index)}
+                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <input
+                      type="text"
+                      value={subtask.text}
+                      onChange={(e) => updateSubtask(index, e.target.value)}
+                      placeholder="Subtask description"
+                      className="grow px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <button type="button" onClick={() => removeSubtask(index)}>
+                      🗑️
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="w-full flex flex-row items-center space-x-2">
+                <div className="w-3"></div>
+                <input
+                  type="text"
+                  value={newSubTask}
+                  onChange={(e) => setNewSubTask(e.target.value)}
+                  placeholder="Add Subtask..."
+                  className="grow px-2 py-1 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button type="button" onClick={() => addSubtask()}>
+                  ➕
+                </button>
+              </div>
             </div>
           </div>
 
@@ -287,28 +297,44 @@ const TaskModal: React.FC<TaskModalProps> = ({
               Notes
             </label>
             <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+              value={formData.Notes}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, Notes: e.target.value }))
+              }
               rows={3}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Additional notes..."
             />
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-slate-200">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              {task ? 'Update' : 'Create'} Task
-            </button>
+          <div className="flex flex-row  gap-4 justify-between">
+            <div className="">
+              {task.Id && (
+                <button
+                  type="button"
+                  onClick={() => onDeleteTask(task.Id!)}
+                  className="px-4 py-2  text-slate-700 bg-red-300 rounded-lg hover:bg-red-400 "
+                >
+                  🗑️ Delete
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-row gap-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                {task.Id ? "Update" : "Create"} Task
+              </button>
+            </div>
           </div>
         </form>
       </div>
