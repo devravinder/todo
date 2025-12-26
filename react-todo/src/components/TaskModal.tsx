@@ -1,26 +1,29 @@
+import useAppContext from "../hooks/useAppContext";
 import { CLOSE } from "../util/icons";
 import TaskForm, { toData, toFormData } from "./TaskForm";
 
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (task: Task) => void;
-  onDeleteTask: (taskId: string) => void;
   task: Task;
 }
 
-const TaskModal = ({
-  isOpen,
-  onClose,
-  onSave,
-  onDeleteTask,
-  task,
-}: TaskModalProps) => {
+const TaskModal = ({ isOpen, onClose, task }: TaskModalProps) => {
+  const { addTask, deleteTask, editTask } = useAppContext();
+
+  const handleSaveTask = (task: Task) => {
+    if (task.Id) {
+      editTask(task.Id, task);
+    } else {
+      addTask(task);
+    }
+  };
+
   const handleClose = () => {
     onClose();
   };
-  const handleSubmit = (taskData: Task) => {
-    onSave(taskData);
+  const onSubmit = (taskData: Task) => {
+    handleSaveTask(taskData);
     handleClose();
   };
 
@@ -43,9 +46,9 @@ const TaskModal = ({
 
         <TaskForm
           onCancel={handleClose}
-          onDelete={() => onDeleteTask(task.Id!)}
+          onDelete={() => deleteTask(task.Id!)}
           data={toFormData(task)}
-          onSubmit={(data) => handleSubmit(toData(data))}
+          onSubmit={(data) => onSubmit(toData(data))}
         />
       </div>
     </div>

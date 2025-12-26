@@ -1,10 +1,10 @@
 import React, { useState } from "react";
+import useAppContext from "../hooks/useAppContext";
+import ArchiveModel from "./ArchiveModel";
 import Header from "./Header";
 import KanbanColumn from "./KanbanColumn";
-import TaskModal from "./TaskModal";
 import SettingsModal from "./SettingsModal";
-import ArchiveModel from "./ArchiveModel";
-import useAppContext from "../hooks/useAppContext";
+import TaskModal from "./TaskModal";
 
 export default function KanbanDashboard() {
   const {
@@ -12,9 +12,7 @@ export default function KanbanDashboard() {
     setActiveModal,
     config,
     tasks,
-    addTask,
     editTask,
-    deleteTask,
   } = useAppContext();
 
   const newTask = (status?: string): Task => {
@@ -52,18 +50,6 @@ export default function KanbanDashboard() {
     setActiveModal("TASK");
   };
 
-  const handleSaveTask = (task: Task) => {
-    if (task.Id) {
-      editTask(task.Id, task);
-    } else {
-      addTask(task);
-    }
-  };
-
-  const handleDeleteTask = (taskId: string) => {
-    deleteTask(taskId);
-    setActiveModal(undefined);
-  };
 
   const handleDragStart = (e: React.DragEvent, task: Task) => {
     e.dataTransfer.setData("text/plain", task.Id!);
@@ -153,8 +139,6 @@ export default function KanbanDashboard() {
           setActiveModal(undefined);
           setEditingTask(newTask());
         }}
-        onDeleteTask={handleDeleteTask}
-        onSave={handleSaveTask}
         task={editingTask}
       />
 
