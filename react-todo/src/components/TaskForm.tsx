@@ -165,7 +165,7 @@ const TaskForm = ({ data, onSubmit, onCancel, onDelete }: FormProps) => {
           )}
         </form.Field>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <form.Field name="Priority">
             {(field) => (
               <div>
@@ -185,6 +185,33 @@ const TaskForm = ({ data, onSubmit, onCancel, onDelete }: FormProps) => {
                   {config.Priorities.map((priority) => (
                     <option key={priority} value={priority}>
                       {priority}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="Category">
+            {(field) => (
+              <div>
+                <label
+                  htmlFor={field.name}
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
+                  Category
+                </label>
+                <select
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                >
+                  <option value="">Unassigned</option>
+                  {config.Categories.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
                     </option>
                   ))}
                 </select>

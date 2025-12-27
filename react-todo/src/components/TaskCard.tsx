@@ -52,10 +52,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
               {USER}@{task.AssignedTo}
             </span>
           )}
+          {task.Category && (
+            <span className="text-xs py-1 px-2 rounded-md bg-sky-200  text-sky-600">
+              {task.Category}
+            </span>
+          )}
           {task.Tags.slice(0, 3).map((tag, index) => (
             <span
               key={index}
-              className="inline-flex items-center px-2 py-1 text-xs bg-indigo-50 text-indigo-700 rounded"
+              className="inline-flex items-center px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded"
             >
               {tag}
             </span>
