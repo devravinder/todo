@@ -178,7 +178,7 @@
 - text-color: #fb542b
 - bg-color: #fb542b
 
-##### 🟠 High
+#### 🟠 High
 
 - text-color: #fb542b
 - bg-color: #fb542b

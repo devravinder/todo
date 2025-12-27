@@ -12,10 +12,16 @@
           "startedDate": "2025-01-15T00:00:00.000Z",
           "dueDate": "2025-01-16T00:00:00.000Z",
           "completedDate": "2025-01-16T00:00:00.000Z",
-          "Tags": ["#ui", "#refactor"],
-          "Subtasks": ["[x] Map priority colors", "[x] Test UI"],
           "Notes": "Looks good.",
-          "Status": "✅ Done"
+          "Status": "✅ Done",
+          "Tags": [
+            "#ui",
+            "#refactor"
+          ],
+          "Subtasks": [
+            "[x] Map priority colors",
+            "[x] Test UI"
+          ]
         }
       },
       "🚀 In Progress": {
@@ -28,10 +34,15 @@
           "createdDate": "2025-01-14T00:00:00.000Z",
           "startedDate": "2025-01-15T00:00:00.000Z",
           "dueDate": "2025-01-18T00:00:00.000Z",
-          "Tags": ["#backend"],
-          "Subtasks": ["[x] Fetch tasks API", "[ ] Save updates"],
           "Notes": "Auth pending.",
-          "Status": "🚀 In Progress"
+          "Status": "🚀 In Progress",
+          "Tags": [
+            "#backend"
+          ],
+          "Subtasks": [
+            "[x] Fetch tasks API",
+            "[ ] Save updates"
+          ]
         }
       },
       "📝 To Do": {
@@ -43,10 +54,14 @@
           "AssignedTo": "Ravinder",
           "createdDate": "2025-01-16T00:00:00.000Z",
           "dueDate": "2025-01-19T00:00:00.000Z",
-          "Tags": ["#test"],
-          "Subtasks": ["[ ] Test create task", "[ ] Test status change"],
-          "Notes": "",
-          "Status": "📝 To Do"
+          "Status": "📝 To Do",
+          "Tags": [
+            "#test"
+          ],
+          "Subtasks": [
+            "[ ] Test create task",
+            "[ ] Test status change"
+          ]
         }
       },
       "👀 In Review": {
@@ -58,10 +73,14 @@
           "createdDate": "2025-01-17T00:00:00.000Z",
           "startedDate": "2025-01-17T00:00:00.000Z",
           "dueDate": "2025-01-18T00:00:00.000Z",
-          "Tags": ["#docs"],
-          "Subtasks": ["[x] Update setup steps", "[ ] Add screenshots"],
-          "Notes": "",
-          "Status": "👀 In Review"
+          "Status": "👀 In Review",
+          "Tags": [
+            "#docs"
+          ],
+          "Subtasks": [
+            "[x] Update setup steps",
+            "[ ] Add screenshots"
+          ]
         }
       },
       "📦 Archives": {
@@ -75,10 +94,15 @@
           "startedDate": "2025-01-18T00:00:00.000Z",
           "dueDate": "2025-01-18T00:00:00.000Z",
           "completedDate": "2025-01-18T00:00:00.000Z",
-          "Tags": ["#refactor"],
-          "Subtasks": ["[x] Filter completed tasks", "[x] Move to archive"],
           "Notes": "Cleanup done.",
-          "Status": "📦 Archives"
+          "Status": "📦 Archives",
+          "Tags": [
+            "#refactor"
+          ],
+          "Subtasks": [
+            "[x] Filter completed tasks",
+            "[x] Move to archive"
+          ]
         }
       }
     },
@@ -90,12 +114,6 @@
         "✅ Done",
         "📦 Archives"
       ],
-      "Workflow Statuses": {
-        "CREATE_STATUS": "📝 To Do",
-        "START_STATUS": "🚀 In Progress",
-        "END_STATUS": "✅ Done",
-        "ARCHIVE_STATUS": "📦 Archives"
-      },
       "Categories": [
         "Frontend",
         "Backend",
@@ -104,17 +122,16 @@
         "Tests",
         "Documentation"
       ],
-      "Users": ["Ravinder", "Reddy"],
-      "Priorities": ["🔴 Critical", "🟠 High", "🟡 Medium", "🟢 Low"],
-      "Priority Colors": {
-        "🔴 Critical": {
-          "text-color": "#fb542b",
-          "bg-color": "#fb542b",
-          "🟠 High": { "text-color": "#fb542b", "bg-color": "#fb542b" }
-        },
-        "🟡 Medium": { "text-color": "#fb542b", "bg-color": "#fb542b" },
-        "🟢 Low": { "text-color": "#fb542b", "bg-color": "#fb542b" }
-      },
+      "Users": [
+        "Ravinder",
+        "Reddy"
+      ],
+      "Priorities": [
+        "🔴 Critical",
+        "🟠 High",
+        "🟡 Medium",
+        "🟢 Low"
+      ],
       "Tags": [
         "#bug",
         "#feature",
@@ -124,7 +141,31 @@
         "#refactor",
         "#docs",
         "#test"
-      ]
+      ],
+      "Workflow Statuses": {
+        "CREATE_STATUS": "📝 To Do",
+        "START_STATUS": "🚀 In Progress",
+        "END_STATUS": "✅ Done",
+        "ARCHIVE_STATUS": "📦 Archives"
+      },
+      "Priority Colors": {
+        "🔴 Critical": {
+          "text-color": "#fb542b",
+          "bg-color": "#fb542b"
+        },
+        "🟠 High": {
+          "text-color": "#fb542b",
+          "bg-color": "#fb542b"
+        },
+        "🟡 Medium": {
+          "text-color": "#fb542b",
+          "bg-color": "#fb542b"
+        },
+        "🟢 Low": {
+          "text-color": "#fb542b",
+          "bg-color": "#fb542b"
+        }
+      }
     }
   }
 }

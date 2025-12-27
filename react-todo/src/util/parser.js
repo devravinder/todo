@@ -112,9 +112,6 @@ export const toMarkdown = (obj, depth = 1) => {
     const value = obj[key];
 
     if (value && typeof value !== "string") {
-
-      if(depth==1)
-      console.log({depth, key})
       // It's a header
       md += `\n${"#".repeat(depth)} ${key}\n`;
 
