@@ -28,7 +28,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
         <SettingsForm
           data={config}
-          onSubmit={(data) => setConfig(data)}
+          onSubmit={(data) =>{
+             setConfig(data)
+             onClose()
+          }}
           onCancel={onClose}
         />
       </div>
