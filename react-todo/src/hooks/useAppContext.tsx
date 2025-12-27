@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { defaultConfig } from "../util/constants";
 
 type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined;
@@ -10,6 +10,7 @@ type AppContextType = {
   activeModal: ActiveModal;
   setActiveModal: (activeModal: ActiveModal) => void;
   tasks: Task[];
+  statuses: string[]
   addTask: (task: Task) => void;
   editTask: (id: string, task: Task) => void;
   deleteTask: (taskId: string) => void;
@@ -232,14 +233,19 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setTasks((prev) => prev.filter((task) => task.Id !== taskId));
   };
 
+  const statuses = useMemo(() => config.Statuses.filter(
+      (s) => s != config["Workflow Statuses"].ARCHIVE_STATUS
+    ), [config])
+
   return (
     <AppContext.Provider
       value={{
         config,
-        setConfig,
         activeModal,
-        setActiveModal,
         tasks,
+        statuses,
+        setConfig,
+        setActiveModal,
         addTask,
         editTask,
         deleteTask,

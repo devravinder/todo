@@ -21,7 +21,7 @@ declare global {
     Categories: string[];
     Users: string[];
     Priorities: string[];
-    "Priority Colors": Record<string, Record<string, string | Record<string, string>>>;
+    "Priority Colors": Record<string, Record<string, string>>;
     Tags: string[];
   }
 }

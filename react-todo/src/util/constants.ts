@@ -29,10 +29,10 @@ export const defaultConfig = {
     "🔴 Critical": {
       "text-color": "#fb542b",
       "bg-color": "#fb542b",
-      "🟠 High": {
-        "text-color": "#fb542b",
-        "bg-color": "#fb542b",
-      },
+    },
+    "🟠 High": {
+      "text-color": "#fb542b",
+      "bg-color": "#fb542b",
     },
     "🟡 Medium": {
       "text-color": "#fb542b",

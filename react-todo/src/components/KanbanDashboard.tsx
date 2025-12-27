@@ -7,7 +7,7 @@ import SettingsModal from "./SettingsModal";
 import TaskModal from "./TaskModal";
 
 export default function KanbanDashboard() {
-  const { activeModal, setActiveModal, config, tasks, changeStatus } =
+  const { activeModal, config, tasks, statuses, changeStatus, setActiveModal } =
     useAppContext();
 
   const newTask = (status?: string): Task => {
@@ -23,15 +23,6 @@ export default function KanbanDashboard() {
       Subtasks: [],
     };
   };
-
-  const [statuses, setStatuses] = useState(
-    config.Statuses.filter(
-      (s) => s != config["Workflow Statuses"].ARCHIVE_STATUS
-    )
-  );
-  const [users, setUsers] = useState(config.Users);
-  const [tags, setTags] = useState(config.Tags);
-  const [priorities, setPriorities] = useState(config.Priorities);
 
   const [editingTask, setEditingTask] = useState<Task>(() => newTask());
 
@@ -121,14 +112,6 @@ export default function KanbanDashboard() {
       <SettingsModal
         isOpen={activeModal === "SETTINGS"}
         onClose={() => setActiveModal(undefined)}
-        groups={statuses}
-        users={users}
-        tags={tags}
-        priorities={priorities}
-        onUpdateGroups={setStatuses}
-        onUpdateUsers={setUsers}
-        onUpdateTags={setTags}
-        onUpdatePriorities={setPriorities}
       />
     </div>
   );

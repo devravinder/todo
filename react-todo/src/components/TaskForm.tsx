@@ -43,13 +43,13 @@ const convertSubtasksToMarkdown = (subTasks: SubTask[]): string[] => {
   return subTasks.map((task) => `[${task.completed ? "x" : " "}] ${task.text}`);
 };
 
-type TaskFormProps = {
+type FormProps = {
   data: FormData;
   onSubmit: (data: FormData) => void;
   onCancel: VoidFunction;
   onDelete: VoidFunction;
 };
-const TaskForm = ({ data, onSubmit, onCancel, onDelete }: TaskFormProps) => {
+const TaskForm = ({ data, onSubmit, onCancel, onDelete }: FormProps) => {
   const { config } = useAppContext();
   const form = useForm({
     defaultValues: data,
@@ -394,13 +394,13 @@ const TaskForm = ({ data, onSubmit, onCancel, onDelete }: TaskFormProps) => {
               onClick={() => form.reset()}
               className="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300"
             >
-              Reset Form
+              Reset
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-              Save Task
+              Save
             </button>
           </div>
         </div>
