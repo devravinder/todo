@@ -1,5 +1,5 @@
-import useAppContext from "../hooks/useAppContext";
-import { CLOSE } from "../util/icons";
+import useAppContext from "../../hooks/useAppContext";
+import { CLOSE } from "../../util/icons";
 import TaskForm, { toData, toFormData } from "./TaskForm";
 
 interface TaskModalProps {

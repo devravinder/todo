@@ -1,6 +1,6 @@
 import { useForm, useStore } from "@tanstack/react-form";
-import { ADD, CLOCK, USER, CHECK, CLOSE, DELETE } from "../util/icons";
-import useAppContext from "../hooks/useAppContext";
+import { ADD, CLOCK, USER, CHECK, CLOSE, DELETE } from "../../util/icons";
+import useAppContext from "../../hooks/useAppContext";
 
 interface SubTask {
   text: string;

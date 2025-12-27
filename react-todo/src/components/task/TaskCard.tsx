@@ -1,6 +1,6 @@
 import React from "react";
 import { format } from "date-fns";
-import { CALENDER, CLOCK, EDIT, USER } from "../util/icons";
+import { CALENDER, CLOCK, EDIT, USER } from "../../util/icons";
  
 interface TaskCardProps {
   task: Task;

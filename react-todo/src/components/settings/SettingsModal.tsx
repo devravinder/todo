@@ -1,6 +1,6 @@
 import React from "react";
-import useAppContext from "../hooks/useAppContext";
-import { CLOSE } from "../util/icons";
+import useAppContext from "../../hooks/useAppContext";
+import { CLOSE } from "../../util/icons";
 import SettingsForm from "./SettingsForm";
 
 interface SettingsModalProps {

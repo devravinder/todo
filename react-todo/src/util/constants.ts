@@ -1,4 +1,4 @@
-export const defaultConfig = {
+export const defaultConfig: TodoConfig = {
   Statuses: [
     "📝 To Do",
     "🚀 In Progress",

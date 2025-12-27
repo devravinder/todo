@@ -1,0 +1,100 @@
+import { useState } from "react";
+import { MultiTextInputs } from "./MultiTextInputs";
+import { useAppForm } from "../../hooks/useAppForm";
+
+type FormData = TodoConfig;
+
+type FormProps = {
+  data: FormData;
+  onConfigChange: (oldValue: TodoConfig, newValue: TodoConfig) => void;
+  onCancel: VoidFunction;
+};
+
+type TabKey = ArrayKeys<FormData>;
+
+export default function SettingsForm({
+  data,
+  onConfigChange,
+  onCancel,
+}: FormProps) {
+  const form = useAppForm({
+    defaultValues: data,
+    onSubmit: async ({ value }) => {
+      try {
+        onConfigChange(data, value);
+      } catch (error) {
+        console.error("Failed to save task", error);
+      }
+    },
+  });
+
+  const [tabs] = useState(() => Object.keys(data) as TabKey[]);
+
+  const [activeTab, setActiveTab] = useState<keyof TodoConfig>(tabs[0]);
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form. handleSubmit();
+      }}
+    >
+      <div className="flex">
+        <div className="w-48 border-r border-slate-200">
+          <nav className="p-4 space-y-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() =>
+                  setActiveTab(tab)
+                }
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeTab === tab
+                    ? "bg-blue-100 text-blue-700"
+                    : "text-slate-600 hover:bg-slate-100"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <form.AppField
+          name={activeTab}
+          children={() => Array.isArray(data[activeTab])? <MultiTextInputs label={activeTab} /> : undefined}
+        />
+
+      </div>
+
+      <div className="flex gap-4 py-4 px-4 items-end justify-between border-t border-slate-200">
+        <div className="flex flex-row gap-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 bg-slate-200 te-600xt-slate-700 rounded-md hover:bg-slate-300"
+          >
+            Cancel
+          </button>
+        </div>
+        <div className="flex flex-row gap-4">
+          <button
+            type="button"
+            onClick={() => form.reset()}
+            className="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300"
+          >
+            Reset
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}

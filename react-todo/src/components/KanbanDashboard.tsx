@@ -3,8 +3,8 @@ import useAppContext from "../hooks/useAppContext";
 import ArchiveModel from "./ArchiveModel";
 import Header from "./Header";
 import KanbanColumn from "./KanbanColumn";
-import SettingsModal from "./SettingsModal";
-import TaskModal from "./TaskModal";
+import SettingsModal from "./settings/SettingsModal";
+import TaskModal from "./task/TaskModal";
 
 export default function KanbanDashboard() {
   const { activeModal, config, tasks, statuses, changeStatus, setActiveModal } =
