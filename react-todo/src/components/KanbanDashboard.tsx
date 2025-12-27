@@ -20,7 +20,7 @@ export default function KanbanDashboard() {
       createdDate: new Date(),
       dueDate: new Date(),
       Tags: [],
-      Subtasks: [],
+      Subtasks: []
     };
   };
 

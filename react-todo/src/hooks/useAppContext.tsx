@@ -1,23 +1,44 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { defaultConfig } from "../util/constants";
 
 type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined;
 
 type AppContextType = {
   config: TodoConfig;
-  setConfig: (config: TodoConfig) => void;
+  onConfigChange: (old: TodoConfig, newValue: TodoConfig) => void;
   activeModal: ActiveModal;
   setActiveModal: (activeModal: ActiveModal) => void;
   tasks: Task[];
-  statuses: string[]
+  statuses: string[];
   addTask: (task: Task) => void;
   editTask: (id: string, task: Task) => void;
   deleteTask: (taskId: string) => void;
-  changeStatus: (id: string, status: string) => void
+  changeStatus: (id: string, status: string) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
+
+type Change<T> = {
+  key: keyof T;
+  oldValue: T[keyof T];
+  newValue: T[keyof T];
+};
+
+type ChangeAction = { key: keyof TodoConfig; from: string; to: string };
+
+const keyMap: Partial<{ [K in keyof TodoConfig]: keyof Task }> = {
+  Categories: "Category",
+  Priorities: "Priority",
+  Statuses: "Status",
+  Users: "AssignedTo",
+};
 
 const sampleTasks: Task[] = [
   {
@@ -225,17 +246,49 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const changeStatus=(id: string, status: string)=>{
-        editTask(id, {Status:status})
-  }
+  const changeStatus = (id: string, status: string) => {
+    editTask(id, { Status: status });
+  };
 
   const deleteTask = (taskId: string) => {
     setTasks((prev) => prev.filter((task) => task.Id !== taskId));
   };
 
-  const statuses = useMemo(() => config.Statuses.filter(
-      (s) => s != config["Workflow Statuses"].ARCHIVE_STATUS
-    ), [config])
+  const updateTaskField = (
+    key: keyof Task,
+    from: Task[keyof Task],
+    to: Task[keyof Task]
+  ) => {
+    setTasks((pre) =>
+      pre.map((old) => (old[key] === from ? { ...old, [key]: to } : old))
+    );
+  };
+
+  const handleChageActions = (changeActions: ChangeAction[]) => {
+    for (const { key, from, to } of changeActions) {
+      if (key in keyMap) {
+        updateTaskField(keyMap[key]!, from, to);
+      }
+    }
+  };
+
+  const onConfigChange = (oldValue: TodoConfig, newValue: TodoConfig) => {
+    const changes: Change<TodoConfig>[] = getChanges<TodoConfig>(
+      oldValue,
+      newValue
+    );
+    const changeActions = getChangeActions(changes);
+    handleChageActions(changeActions);
+    setConfig(newValue);
+  };
+
+  const statuses = useMemo(
+    () =>
+      config.Statuses.filter(
+        (s) => s != config["Workflow Statuses"].ARCHIVE_STATUS
+      ),
+    [config]
+  );
 
   return (
     <AppContext.Provider
@@ -244,17 +297,62 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         activeModal,
         tasks,
         statuses,
-        setConfig,
+        onConfigChange,
         setActiveModal,
         addTask,
         editTask,
         deleteTask,
-        changeStatus
+        changeStatus,
       }}
     >
       {children}
     </AppContext.Provider>
   );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getChanges<T extends Record<string, any>>(oldValue: T, newValue: T) {
+  const changes: Change<T>[] = [];
+
+  (Object.keys(oldValue) as (keyof T)[]).forEach((key) => {
+    const oldVal = oldValue[key];
+    const newVal = newValue[key];
+
+    if (!isEqual(oldVal, newVal)) {
+      changes.push({
+        key,
+        oldValue: oldVal,
+        newValue: newVal,
+      });
+    }
+  });
+
+  return changes;
+}
+
+function getChangeActions(changes: Change<TodoConfig>[]) {
+  const changeActions: ChangeAction[] = [];
+
+  for (const { oldValue, newValue, key } of changes) {
+    if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+      // in our case only string[]
+      const actions: ChangeAction[] = oldValue
+        .map((value, index) =>
+          value !== newValue[index]
+            ? { key, from: value, to: newValue[index] }
+            : (undefined as unknown as ChangeAction)
+        )
+        .filter(Boolean);
+
+      changeActions.push(...actions);
+    }
+  }
+
+  return changeActions;
+}
+
+const isEqual = (a: unknown, b: unknown): boolean => {
+  return JSON.stringify(a) === JSON.stringify(b);
 };
 
 export const useAppContext = () => {

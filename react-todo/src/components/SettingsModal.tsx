@@ -9,7 +9,7 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
-  const { config, setConfig } = useAppContext();
+  const { config, onConfigChange } = useAppContext();
 
   if (!isOpen) return null;
 
@@ -28,8 +28,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
         <SettingsForm
           data={config}
-          onSubmit={(data) =>{
-             setConfig(data)
+          onConfigChange={(oldValue, newValue) =>{
+             onConfigChange(oldValue, newValue)
              onClose()
           }}
           onCancel={onClose}

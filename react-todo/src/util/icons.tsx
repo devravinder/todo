@@ -1,5 +1,6 @@
 export const CLOSE = "⤫";
 export const ADD = "✚";
+export const MINUS = "━"
 export const SETTINGS = "⚙️";
 export const DELETE = "🗑️";
 export const USER = "🙍🏻‍♂️";

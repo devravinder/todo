@@ -13,17 +13,22 @@ declare global {
     Subtasks: string[];
     Notes: string;
     Status: string;
+    Category?: string;
   }
 
   interface TodoConfig {
     Statuses: string[];
-    "Workflow Statuses": Record<string, string>
+    "Workflow Statuses": Record<string, string>;
     Categories: string[];
     Users: string[];
     Priorities: string[];
     "Priority Colors": Record<string, Record<string, string>>;
     Tags: string[];
   }
+
+  type ArrayKeys<T> = {
+    [K in keyof T]: T[K] extends string[] ? K : never;
+  }[keyof T];
 }
 
 export {};
