@@ -1,6 +1,7 @@
 import { useForm, useStore } from "@tanstack/react-form";
 import { ADD, CLOCK, USER, CHECK, CLOSE, DELETE } from "../../util/icons";
 import useAppContext from "../../hooks/useAppContext";
+import { format } from "date-fns";
 
 interface SubTask {
   text: string;
@@ -24,7 +25,7 @@ export const toFormData = (task: Task): FormData => {
   const { Subtasks, dueDate, ...rest } = task;
   return {
     ...rest,
-    dueDate: dueDate ? dueDate.toISOString().split("T")[0] : dueDate,
+    dueDate: dueDate ? format(dueDate, "yyyy-MM-dd") : dueDate,
     Subtasks: parseSubtasksFromMarkdown(Subtasks),
   };
 };

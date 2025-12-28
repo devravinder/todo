@@ -4,7 +4,6 @@ const JSON_FILE = "todo.json";
 type FileType = "md" | "json";
 
 export const getFileHandler = async (preferredFileType: FileType = "md") => {
-  try {
     if (!("showDirectoryPicker" in window)) alert("Not Supported");
 
     const dirHandle = await window?.showDirectoryPicker();
@@ -32,16 +31,6 @@ export const getFileHandler = async (preferredFileType: FileType = "md") => {
       );
       return fileHandle;
     }
-
-    // Create todo.md
-  } catch (err) {
-    const error = err as { name?: string };
-    if (error?.name === "AbortError") {
-      console.log("----");
-    } else {
-      console.error(error);
-    }
-  }
 };
 
 export const writeToFile = async (

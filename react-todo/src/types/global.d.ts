@@ -57,6 +57,10 @@ declare global {
   type ArrayKeys<T> = {
     [K in keyof T]: T[K] extends string[] ? K : never;
   }[keyof T];
+
+  type JSONObject = {
+  [key: string]: string | string[] | JSONObject;
+};
 }
 
 export {};
