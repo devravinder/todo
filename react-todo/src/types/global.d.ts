@@ -16,13 +16,17 @@ declare global {
     Category?: string;
   }
 
+  interface Color {
+    "text-color": string,
+    "bg-color": string,
+  }
   interface TodoConfig {
     Statuses: string[];
     "Workflow Statuses": Record<string, string>;
     Categories: string[];
     Users: string[];
     Priorities: string[];
-    "Priority Colors": Record<string, Record<string, string>>;
+    "Priority Colors": Record<string, Color>;
     Tags: string[];
   }
 

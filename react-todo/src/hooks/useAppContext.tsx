@@ -33,11 +33,12 @@ type Change<T> = {
 
 type ChangeAction = { key: keyof TodoConfig; from: string; to: string };
 
-const keyMap: Partial<{ [K in keyof TodoConfig]: keyof Task }> = {
+const keyMap: Partial<{ [K in keyof TodoConfig]: keyof Task | undefined }> = {
   Categories: "Category",
   Priorities: "Priority",
   Statuses: "Status",
   Users: "AssignedTo",
+  "Priority Colors": undefined
 };
 
 const sampleTasks: Task[] = [

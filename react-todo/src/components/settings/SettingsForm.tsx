@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MultiTextInputs } from "./MultiTextInputs";
 import { useAppForm } from "../../hooks/useAppForm";
+import { PriorityColors } from "./PriorityColors";
 
 type FormData = TodoConfig;
 
@@ -30,7 +31,9 @@ export default function SettingsForm({
 
   const [tabs] = useState(() => Object.keys(data) as TabKey[]);
 
-  const [activeTab, setActiveTab] = useState<keyof TodoConfig>(tabs[0]);
+  const [activeTab, setActiveTab] = useState<{name: keyof TodoConfig, isArray: boolean}>(
+    ()=>({name: tabs[0], isArray: Array.isArray(data[tabs[0]])})
+  );
 
   return (
     <form
@@ -48,10 +51,10 @@ export default function SettingsForm({
                 key={tab}
                 type="button"
                 onClick={() =>
-                  setActiveTab(tab)
+                  setActiveTab({name:tab, isArray: Array.isArray(data[tab])})
                 }
                 className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === tab
+                  activeTab.name === tab
                     ? "bg-blue-100 text-blue-700"
                     : "text-slate-600 hover:bg-slate-100"
                 }`}
@@ -62,10 +65,14 @@ export default function SettingsForm({
           </nav>
         </div>
 
+  
+
         <form.AppField
-          name={activeTab}
-          children={() => Array.isArray(data[activeTab])? <MultiTextInputs label={activeTab} /> : undefined}
+          name={activeTab.name}
+          children={() => activeTab.isArray? <MultiTextInputs label={activeTab.name} /> : undefined}
         />
+
+        {activeTab.name==="Priority Colors" && <PriorityColors form={form} fields="Priority Colors"/>}
 
       </div>
 

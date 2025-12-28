@@ -27,20 +27,20 @@ export const defaultConfig: TodoConfig = {
   Priorities: ["🔴 Critical", "🟠 High", "🟡 Medium", "🟢 Low"],
   "Priority Colors": {
     "🔴 Critical": {
-      "text-color": "#fb542b",
-      "bg-color": "#fb542b",
+      "text-color": "#991B1B",
+      "bg-color": "#e8abab",
     },
     "🟠 High": {
-      "text-color": "#fb542b",
-      "bg-color": "#fb542b",
+      "text-color": "#a32900",
+      "bg-color": "#fdb981",
     },
     "🟡 Medium": {
-      "text-color": "#fb542b",
-      "bg-color": "#fb542b",
+      "text-color": "#652525",
+      "bg-color": "#ffea94",
     },
     "🟢 Low": {
-      "text-color": "#fb542b",
-      "bg-color": "#fb542b",
+      "text-color": "#166534",
+      "bg-color": "#bcfbd2",
     },
   },
 

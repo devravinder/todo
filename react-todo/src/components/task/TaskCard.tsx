@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { CALENDER, CLOCK, EDIT, USER } from "../../util/icons";
+import useAppContext from "../../hooks/useAppContext";
  
 interface TaskCardProps {
   task: Task;
@@ -9,6 +10,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
+  const {config} = useAppContext()
   const completedSubtasks = task.Subtasks.filter((st) => st.includes("[x] ")).length;
   const totalSubtasks = task.Subtasks.length;
 
@@ -44,7 +46,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-1">
-          <span className="text-xs py-1 px-2 rounded-md bg-emerald-100 ">
+          <span className="text-xs py-1 px-2 rounded-md bg-emerald-100"
+          style={{
+              backgroundColor: config["Priority Colors"][task.Priority]?.["bg-color"],
+              color: config["Priority Colors"][task.Priority]?.["text-color"],
+            }}
+          >
             {task.Priority}
           </span>
           {task.AssignedTo && (
