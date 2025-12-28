@@ -21,6 +21,7 @@ type AppContextType = {
   editTask: (id: string, task: Task) => void;
   deleteTask: (taskId: string) => void;
   changeStatus: (id: string, status: string) => void;
+  getSampleNewTask: (status?: string)=>Task
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -199,6 +200,20 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [activeModal, setActiveModal] = useState<ActiveModal>();
   const [tasks, setTasks] = useState<Task[]>(sampleTasks);
 
+  const getSampleNewTask = (status?: string): Task => {
+      return {
+        Title: "",
+        Status: status || config["Workflow Statuses"]["CREATE_STATUS"],
+        Description: "",
+        Notes: "",
+        Priority: config.Priorities[config.Priorities.length - 1],
+        createdDate: new Date(),
+        dueDate: new Date(),
+        Tags: [],
+        Subtasks: [],
+      };
+    };
+
   const addTask = (task: Task) => {
     setTasks((prev) => [
       ...prev,
@@ -295,6 +310,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         editTask,
         deleteTask,
         changeStatus,
+        getSampleNewTask
       }}
     >
       {children}

@@ -7,27 +7,22 @@ import SettingsModal from "./settings/SettingsModal";
 import TaskModal from "./task/TaskModal";
 
 export default function KanbanDashboard() {
-  const { activeModal, config, tasks, statuses, changeStatus, setActiveModal } =
-    useAppContext();
-    
-  const newTask = (status?: string): Task => {
-    return {
-      Title: "",
-      Status: status || config["Workflow Statuses"]["CREATE_STATUS"],
-      Description: "",
-      Notes: "",
-      Priority: config.Priorities[config.Priorities.length - 1],
-      createdDate: new Date(),
-      dueDate: new Date(),
-      Tags: [],
-      Subtasks: [],
-    };
-  };
+  const {
+    activeModal,
+    config,
+    tasks,
+    statuses,
+    changeStatus,
+    setActiveModal,
+    getSampleNewTask,
+  } = useAppContext();
 
-  const [editingTask, setEditingTask] = useState<Task>(() => newTask());
+  const [editingTask, setEditingTask] = useState<Task>(() =>
+    getSampleNewTask()
+  );
 
   const handleNewTask = (status: string) => {
-    setEditingTask(newTask(status));
+    setEditingTask(getSampleNewTask(status));
     setActiveModal("TASK");
   };
 
@@ -104,7 +99,7 @@ export default function KanbanDashboard() {
           isOpen={activeModal === "TASK"}
           onClose={() => {
             setActiveModal(undefined);
-            setEditingTask(newTask());
+            setEditingTask(getSampleNewTask());
           }}
           task={editingTask}
         />
