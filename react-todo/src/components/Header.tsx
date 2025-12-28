@@ -9,7 +9,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onNewTask, onSettings, onArchive }) => {
   return (
-    <header className="bg-white border-b shadow border-slate-200 px-4 py-3">
+    <header className="w-full bg-white border-b shadow border-slate-200 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center">

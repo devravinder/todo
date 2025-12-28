@@ -1,6 +1,6 @@
-import React from 'react';
-import TaskCard from './task/TaskCard';
-import { ADD } from '../util/icons';
+import React from "react";
+import TaskCard from "./task/TaskCard";
+import { ADD } from "../util/icons";
 
 interface KanbanColumnProps {
   title: string;
@@ -10,21 +10,21 @@ interface KanbanColumnProps {
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragStart: (e: React.DragEvent, task: Task) => void;
-  allowCreation?: boolean
+  allowCreation?: boolean;
 }
 
 const KanbanColumn: React.FC<KanbanColumnProps> = ({
   title,
   tasks,
-  allowCreation=true,
+  allowCreation = true,
   onNewTask,
   onEditTask,
   onDrop,
   onDragOver,
-  onDragStart
+  onDragStart,
 }) => {
   return (
-    <div className="flex flex-col h-full overflow-y-auto shrink-0 w-full sm:w-80 rounded-lg border border-slate-300">
+    <div className="flex flex-col h-fit shrink-0 w-80 rounded-lg border border-slate-300">
       <div className="sticky flex items-center justify-between bg-white rounded-t-lg p-4 border-b border-slate-300">
         <div className="flex items-center space-x-2">
           <h2 className="font-semibold text-slate-800">{title}</h2>
@@ -32,16 +32,18 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
             {tasks.length}
           </span>
         </div>
-        {allowCreation && <button
-          onClick={onNewTask}
-          className="text-slate-400 hover:text-slate-600 cursor-pointer"
-        >
-          {ADD}
-        </button>}
+        {allowCreation && (
+          <button
+            onClick={onNewTask}
+            className="text-slate-400 hover:text-slate-600 cursor-pointer"
+          >
+            {ADD}
+          </button>
+        )}
       </div>
-      
+
       <div
-        className="flex-1 p-4 space-y-3 overflow-y-auto min-h-0"
+        className="grow p-4 space-y-3"
         onDrop={onDrop}
         onDragOver={onDragOver}
       >
@@ -51,13 +53,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
             draggable
             onDragStart={(e) => onDragStart(e, task)}
           >
-            <TaskCard
-              task={task}
-              onEdit={onEditTask}
-            />
+            <TaskCard task={task} onEdit={onEditTask} />
           </div>
         ))}
-        
+
         {tasks.length === 0 && (
           <div className="text-center py-8 text-slate-400">
             <p className="text-sm">No tasks yet</p>

@@ -20,7 +20,7 @@ export default function KanbanDashboard() {
       createdDate: new Date(),
       dueDate: new Date(),
       Tags: [],
-      Subtasks: []
+      Subtasks: [],
     };
   };
 
@@ -56,63 +56,64 @@ export default function KanbanDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col gap-4">
+    <div className="w-full h-full flex flex-col justify-center items-center">
       <Header
         onNewTask={() => handleNewTask(config.Statuses[0])}
         onSettings={() => setActiveModal("SETTINGS")}
         onArchive={() => setActiveModal("ARCHIVE")}
       />
+      <div className="max-w-7xl h-full overflow-auto flex flex-col pb-2">
+        <div className="w-full grow flex justify-around gap-4 py-8">
+          {statuses.map((status) => (
+            <KanbanColumn
+              key={status}
+              title={status}
+              tasks={getTasksByStatus(status)}
+              onNewTask={() => handleNewTask(status)}
+              onEditTask={handleEditTask}
+              onDrop={(e) => handleDrop(e, status)}
+              onDragOver={handleDragOver}
+              onDragStart={handleDragStart}
+            />
+          ))}
+        </div>
 
-      <main className="flex justify-center gap-4 overflow-x-auto p-8">
-        {statuses.map((status) => (
+        <ArchiveModel
+          isOpen={activeModal === "ARCHIVE"}
+          onClose={() => setActiveModal(undefined)}
+        >
           <KanbanColumn
-            key={status}
-            title={status}
-            tasks={getTasksByStatus(status)}
-            onNewTask={() => handleNewTask(status)}
+            title={config["Workflow Statuses"]["ARCHIVE_STATUS"]}
+            tasks={getTasksByStatus(
+              config["Workflow Statuses"]["ARCHIVE_STATUS"]
+            )}
+            onNewTask={() =>
+              handleNewTask(config["Workflow Statuses"]["ARCHIVE_STATUS"])
+            }
             onEditTask={handleEditTask}
-            onDrop={(e) => handleDrop(e, status)}
+            onDrop={(e) =>
+              handleDrop(e, config["Workflow Statuses"]["ARCHIVE_STATUS"])
+            }
             onDragOver={handleDragOver}
             onDragStart={handleDragStart}
+            allowCreation={false}
           />
-        ))}
-      </main>
+        </ArchiveModel>
 
-      <ArchiveModel
-        isOpen={activeModal === "ARCHIVE"}
-        onClose={() => setActiveModal(undefined)}
-      >
-        <KanbanColumn
-          title={config["Workflow Statuses"]["ARCHIVE_STATUS"]}
-          tasks={getTasksByStatus(
-            config["Workflow Statuses"]["ARCHIVE_STATUS"]
-          )}
-          onNewTask={() =>
-            handleNewTask(config["Workflow Statuses"]["ARCHIVE_STATUS"])
-          }
-          onEditTask={handleEditTask}
-          onDrop={(e) =>
-            handleDrop(e, config["Workflow Statuses"]["ARCHIVE_STATUS"])
-          }
-          onDragOver={handleDragOver}
-          onDragStart={handleDragStart}
-          allowCreation={false}
+        <TaskModal
+          isOpen={activeModal === "TASK"}
+          onClose={() => {
+            setActiveModal(undefined);
+            setEditingTask(newTask());
+          }}
+          task={editingTask}
         />
-      </ArchiveModel>
 
-      <TaskModal
-        isOpen={activeModal === "TASK"}
-        onClose={() => {
-          setActiveModal(undefined);
-          setEditingTask(newTask());
-        }}
-        task={editingTask}
-      />
-
-      <SettingsModal
-        isOpen={activeModal === "SETTINGS"}
-        onClose={() => setActiveModal(undefined)}
-      />
+        <SettingsModal
+          isOpen={activeModal === "SETTINGS"}
+          onClose={() => setActiveModal(undefined)}
+        />
+      </div>
     </div>
   );
 }

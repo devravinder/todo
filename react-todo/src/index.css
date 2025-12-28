@@ -13,3 +13,24 @@
     border: none;
   }
 }
+
+@layer base {
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+    
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-blue-500 rounded-full transition-colors;
+  }
+
+  ::-webkit-scrollbar-thumb:hover{
+    @apply bg-blue-600;
+  }
+  *{
+    scrollbar-gutter: stable;
+  }
+}
