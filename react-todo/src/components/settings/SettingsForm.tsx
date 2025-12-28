@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MultiTextInputs } from "./MultiTextInputs";
 import { useAppForm } from "../../hooks/useAppForm";
 import { PriorityColors } from "./PriorityColors";
+import WordFlowStatuses from "./WordFlowStatuses";
 
 type FormData = TodoConfig;
 
@@ -31,16 +32,17 @@ export default function SettingsForm({
 
   const [tabs] = useState(() => Object.keys(data) as TabKey[]);
 
-  const [activeTab, setActiveTab] = useState<{name: keyof TodoConfig, isArray: boolean}>(
-    ()=>({name: tabs[0], isArray: Array.isArray(data[tabs[0]])})
-  );
+  const [activeTab, setActiveTab] = useState<{
+    name: keyof TodoConfig;
+    isArray: boolean;
+  }>(() => ({ name: tabs[0], isArray: Array.isArray(data[tabs[0]]) }));
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        form. handleSubmit();
+        form.handleSubmit();
       }}
     >
       <div className="flex">
@@ -51,7 +53,7 @@ export default function SettingsForm({
                 key={tab}
                 type="button"
                 onClick={() =>
-                  setActiveTab({name:tab, isArray: Array.isArray(data[tab])})
+                  setActiveTab({ name: tab, isArray: Array.isArray(data[tab]) })
                 }
                 className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeTab.name === tab
@@ -65,15 +67,22 @@ export default function SettingsForm({
           </nav>
         </div>
 
-  
-
         <form.AppField
           name={activeTab.name}
-          children={() => activeTab.isArray? <MultiTextInputs label={activeTab.name} /> : undefined}
+          children={() =>
+            activeTab.isArray ? (
+              <MultiTextInputs label={activeTab.name} />
+            ) : undefined
+          }
         />
 
-        {activeTab.name==="Priority Colors" && <PriorityColors form={form} fields="Priority Colors"/>}
+        {activeTab.name === "Priority Colors" && (
+          <PriorityColors form={form} fields="Priority Colors" />
+        )}
 
+        {activeTab.name === "Workflow Statuses" && (
+          <WordFlowStatuses form={form} fields="Workflow Statuses" />
+        )}
       </div>
 
       <div className="flex gap-4 py-4 px-4 items-end justify-between border-t border-slate-200">

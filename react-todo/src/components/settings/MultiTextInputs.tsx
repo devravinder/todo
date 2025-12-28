@@ -23,7 +23,7 @@ export function MultiTextInputs({ label }: { label: keyof TodoConfig }) {
   };
 
   return (
-      <div className="pl-6 pr-8 py-4 flex-1">
+      <div className="pl-6 pr-8 py-4 flex-1 min-w-sm overflow-auto flex flex-col gap-2">
         <h3 className="px-2 text-lg font-medium text-slate-800">
           Manage {field.name}
         </h3>

@@ -9,13 +9,13 @@ export const PriorityColors = withFieldGroup({
   defaultValues: defaultConfig["Priority Colors"],
   render: function Render({ group }) {
     return (
-      <div className="px-4 py-4 flex-1 min-w-sm overflow-auto">
+      <div className="pl-6 pr-8 py-4 flex-1 min-w-sm overflow-auto flex flex-col gap-2">
         <h3 className="px-2 text-lg font-medium text-slate-800">
           Manage Colors
         </h3>
         <div className="flex flex-col gap-4 max-h-72 p-2 overflow-y-auto">
           {Object.keys(group.state.values).map((key) => (
-            <div key={key} className=" py-4 px-4 rounded-lg border border-slate-200 shadow-md">
+            <div key={key} className="py-4 px-4 rounded-lg border border-slate-200 shadow-md">
               <group.Field name={key}>
                 {(field) => (
                   <ColorPicker

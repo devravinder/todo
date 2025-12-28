@@ -5,14 +5,14 @@ type Color = {
   "bg-color": string;
 };
 type ColorPickerProps = {
-  label?: string
+  label?: string;
   color?: Color;
   onChange: (color: Color) => void;
 };
 
 const ColorPicker = ({
   color = { "text-color": "#ffffff", "bg-color": "#3b82f6" },
-  label="Label",
+  label = "Label",
   onChange,
 }: ColorPickerProps) => {
   const handleColorInput = (
@@ -35,7 +35,7 @@ const ColorPicker = ({
   };
 
   return (
-    <div className="flex flex-row items-start gap-4">
+    <div className="w-full flex flex-row items-start gap-4">
       <div className="flex flex-col gap-2 items-center">
         <span>{label}</span>
         <div className="inline-flex text-xs px-4 py-3 rounded-md border border-slate-300">
@@ -50,39 +50,44 @@ const ColorPicker = ({
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 min-w-0">
         <span>Text Color</span>
-        <div className="flex flex-row gap-2 items-center justify-between px-4 py-2 rounded-md border border-slate-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+
+        <div className="flex flex-row gap-2 items-center justify-between px-4 py-2 rounded-md border border-slate-300 focus-within:ring-2 focus-within:ring-blue-500 min-w-0">
           <input
             type="color"
             value={color["text-color"]}
             onChange={(e) => handleColorInput(e, "text-color")}
             className="appearance-none w-6 h-6 rounded-md border border-gray-300 cursor-pointer p-0"
           />
+
           <input
             type="text"
             value={color["text-color"]}
             onChange={(e) => handleHexInput(e, "text-color")}
             placeholder="#000000"
-            className="flex-1 px-4 w-28 text-sm focus:outline-none cursor-pointer"
+            className="flex-1 min-w-0 px-4 text-sm focus:outline-none"
           />
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+
+      <div className="flex flex-col gap-2 min-w-0">
         <span>Bg Color</span>
-        <div className="flex flex-row gap-2 items-center justify-between px-4 py-2 rounded-md border border-slate-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+
+        <div className="flex flex-row gap-2 items-center justify-between px-4 py-2 rounded-md border border-slate-300 focus-within:ring-2 focus-within:ring-blue-500 min-w-0">
           <input
             type="color"
             value={color["bg-color"]}
             onChange={(e) => handleColorInput(e, "bg-color")}
             className="appearance-none w-6 h-6 rounded-md border border-gray-300 cursor-pointer p-0"
           />
+
           <input
             type="text"
             value={color["bg-color"]}
             onChange={(e) => handleHexInput(e, "bg-color")}
             placeholder="#000000"
-            className="flex-1 px-4 w-28 text-sm focus:outline-none cursor-pointer"
+            className="flex-1 min-w-0 px-4 text-sm focus:outline-none"
           />
         </div>
       </div>
