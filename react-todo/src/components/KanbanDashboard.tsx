@@ -56,14 +56,14 @@ export default function KanbanDashboard() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="w-full h-screen flex flex-col">
       <Header
         onNewTask={() => handleNewTask(config.Statuses[0])}
         onSettings={() => setActiveModal("SETTINGS")}
         onArchive={() => setActiveModal("ARCHIVE")}
       />
-      <div className="max-w-7xl h-full overflow-auto flex flex-col pb-2">
-        <div className="w-full grow flex justify-around gap-4 py-8">
+      <main className="w-full max-w-8xl mx-auto flex-1 flex flex-col overflow-hidden">
+        <div className="w-full h-full overflow-auto flex justify-around gap-4 p-8">
           {statuses.map((status) => (
             <KanbanColumn
               key={status}
@@ -113,7 +113,7 @@ export default function KanbanDashboard() {
           isOpen={activeModal === "SETTINGS"}
           onClose={() => setActiveModal(undefined)}
         />
-      </div>
+      </main>
     </div>
   );
 }
