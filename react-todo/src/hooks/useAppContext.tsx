@@ -264,12 +264,12 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
           oldValue as string,
           newValue as string
         );
+        // for DELETE, we don't delete tasks
       }
     }
   };
 
   const onConfigChange = (value: TodoConfig, sideEffects: Change[]) => {
-    console.log({sideEffects})
     handleSideEffects(sideEffects);
     setConfig(value);
   };

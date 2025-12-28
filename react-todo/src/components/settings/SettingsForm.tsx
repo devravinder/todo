@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { MultiTextInputs } from "./MultiTextInputs";
+import ArrayFields, { type TodoArrayField } from "./ArrayFields";
 import { useAppForm } from "../../hooks/useAppForm";
 import { PriorityColors } from "./PriorityColors";
 import WordFlowStatuses from "./WordFlowStatuses";
@@ -12,25 +12,22 @@ type FormProps = {
   onCancel: VoidFunction;
 };
 
-
 export default function SettingsForm({
   data,
   onConfigChange,
   onCancel,
 }: FormProps) {
-
-  const sideEffects = useRef<Change[]>([])
+  const sideEffects = useRef<Change[]>([]);
 
   const form = useAppForm({
     defaultValues: data,
     onSubmit: async ({ value }) => {
       try {
-        console.log("====", sideEffects.current)
         onConfigChange(value, sideEffects.current);
       } catch (error) {
         console.error("Failed to save task", error);
       }
-    }
+    },
   });
 
   const [tabs] = useState(() => Object.keys(data) as (keyof TodoConfig)[]);
@@ -74,7 +71,11 @@ export default function SettingsForm({
           name={activeTab.name}
           children={() =>
             activeTab.isArray ? (
-              <MultiTextInputs label={activeTab.name} sideEffect={(change)=>sideEffects.current.push(change)} />
+              <ArrayFields
+                form={form}
+                label={activeTab.name as TodoArrayField}
+                onSideEffect={(change) => sideEffects.current.push(change)}
+              />
             ) : undefined
           }
         />
