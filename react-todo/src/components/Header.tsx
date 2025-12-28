@@ -1,5 +1,6 @@
 import React from 'react';
-import { ADD, ARCHIVE, SETTINGS } from '../util/icons';
+import { ADD, ARCHIVE, FOLDER, SETTINGS } from '../util/icons';
+import { getFileHandler } from '../util/fileHandler';
 
 interface HeaderProps {
   onNewTask: () => void;
@@ -8,6 +9,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onNewTask, onSettings, onArchive }) => {
+
   return (
     <header className="w-full bg-white border-b shadow border-slate-200 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -24,6 +26,12 @@ const Header: React.FC<HeaderProps> = ({ onNewTask, onSettings, onArchive }) => 
             className=" cursor-pointerinline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-none transition-colors"
           >
             {ADD} New Task
+          </button>
+          <button
+            onClick={getFileHandler}
+            className=" cursor-pointer inline-flex items-center px-3 py-2 bg-slate-100 text-sm font-medium rounded-lg hover:bg-slate-200 "
+          >
+            {FOLDER}
           </button>
           <button
             onClick={onArchive}

@@ -1,4 +1,21 @@
 declare global {
+  interface Window {
+    showDirectoryPicker(options?: {
+      id?: string;
+      mode?: "read" | "readwrite";
+      startIn?:
+        | "desktop"
+        | "documents"
+        | "downloads"
+        | "music"
+        | "pictures"
+        | "videos";
+    }): Promise<FileSystemDirectoryHandle>;
+  }
+
+  interface FileSystemDirectoryHandle {
+    entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
+  }
   interface Task {
     Id?: string;
     Title: string;
@@ -33,9 +50,9 @@ declare global {
     key: string;
     oldValue?: unknown;
     newValue?: unknown;
-    type: "ADD" | "UPDATE" | "DELETE"
+    type: "ADD" | "UPDATE" | "DELETE";
   };
-  type SideEffect=(change: Change)=>void
+  type SideEffect = (change: Change) => void;
 
   type ArrayKeys<T> = {
     [K in keyof T]: T[K] extends string[] ? K : never;
