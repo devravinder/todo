@@ -1,3 +1,6 @@
+export const DATE_FORMAT="DD-MMM-YYYY"
+export const FORM_DATE_FORMAT="YYYY-MM-DD"
+
 export const defaultConfig: TodoConfig = {
   Statuses: [
     "📝 To Do",

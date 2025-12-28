@@ -1,8 +1,9 @@
 import React from "react";
-import { format } from "date-fns";
 import { CALENDER, CLOCK, EDIT, USER } from "../../util/icons";
 import useAppContext from "../../hooks/useAppContext";
- 
+ import dayjs from "dayjs";
+import { DATE_FORMAT } from "../../util/constants";
+
 interface TaskCardProps {
   task: Task;
   onEdit: (task: Task) => void;
@@ -101,11 +102,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
 
         <div className="flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center">
-            {CALENDER} {format(task.createdDate, "dd-MMM-yyyy")}
+            {CALENDER} {dayjs(task.createdDate).format(DATE_FORMAT)}
           </div>
           {task.dueDate && (
             <div className="flex items-center text-orange-600">
-              {CLOCK} {format(task.dueDate, "dd-MMM-yyyy")}
+              {CLOCK} {dayjs(task.dueDate).format(DATE_FORMAT)}
             </div>
           )}
         </div>
