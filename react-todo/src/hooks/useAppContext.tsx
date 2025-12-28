@@ -12,7 +12,7 @@ type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined;
 
 type AppContextType = {
   config: TodoConfig;
-  onConfigChange: (old: TodoConfig, newValue: TodoConfig) => void;
+  onConfigChange: (value: TodoConfig, sideEffects: Change[]) => void;
   activeModal: ActiveModal;
   setActiveModal: (activeModal: ActiveModal) => void;
   tasks: Task[];
@@ -25,20 +25,11 @@ type AppContextType = {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-type Change<T> = {
-  key: keyof T;
-  oldValue: T[keyof T];
-  newValue: T[keyof T];
-};
-
-type ChangeAction = { key: keyof TodoConfig; from: string; to: string };
-
-const keyMap: Partial<{ [K in keyof TodoConfig]: keyof Task | undefined }> = {
+export const SideEffectKey: Partial<{ [K in keyof TodoConfig]: keyof Task | undefined }> = {
   Categories: "Category",
   Priorities: "Priority",
   Statuses: "Status",
   Users: "AssignedTo",
-  "Priority Colors": undefined
 };
 
 const sampleTasks: Task[] = [
@@ -265,22 +256,22 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const handleChageActions = (changeActions: ChangeAction[]) => {
-    for (const { key, from, to } of changeActions) {
-      if (key in keyMap) {
-        updateTaskField(keyMap[key]!, from, to);
+  const handleSideEffects = (sideEffects: Change[]) => {
+    for (const { key, oldValue, newValue, type } of sideEffects) {
+      if (key in SideEffectKey && type === "UPDATE") {
+        updateTaskField(
+          SideEffectKey[key as keyof TodoConfig]!,
+          oldValue as string,
+          newValue as string
+        );
       }
     }
   };
 
-  const onConfigChange = (oldValue: TodoConfig, newValue: TodoConfig) => {
-    const changes: Change<TodoConfig>[] = getChanges<TodoConfig>(
-      oldValue,
-      newValue
-    );
-    const changeActions = getChangeActions(changes);
-    handleChageActions(changeActions);
-    setConfig(newValue);
+  const onConfigChange = (value: TodoConfig, sideEffects: Change[]) => {
+    console.log({sideEffects})
+    handleSideEffects(sideEffects);
+    setConfig(value);
   };
 
   const statuses = useMemo(
@@ -309,51 +300,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AppContext.Provider>
   );
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getChanges<T extends Record<string, any>>(oldValue: T, newValue: T) {
-  const changes: Change<T>[] = [];
-
-  (Object.keys(oldValue) as (keyof T)[]).forEach((key) => {
-    const oldVal = oldValue[key];
-    const newVal = newValue[key];
-
-    if (!isEqual(oldVal, newVal)) {
-      changes.push({
-        key,
-        oldValue: oldVal,
-        newValue: newVal,
-      });
-    }
-  });
-
-  return changes;
-}
-
-function getChangeActions(changes: Change<TodoConfig>[]) {
-  const changeActions: ChangeAction[] = [];
-
-  for (const { oldValue, newValue, key } of changes) {
-    if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-      // in our case only string[]
-      const actions: ChangeAction[] = oldValue
-        .map((value, index) =>
-          value !== newValue[index]
-            ? { key, from: value, to: newValue[index] }
-            : (undefined as unknown as ChangeAction)
-        )
-        .filter(Boolean);
-
-      changeActions.push(...actions);
-    }
-  }
-
-  return changeActions;
-}
-
-const isEqual = (a: unknown, b: unknown): boolean => {
-  return JSON.stringify(a) === JSON.stringify(b);
 };
 
 export const useAppContext = () => {

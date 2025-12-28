@@ -17,8 +17,8 @@ declare global {
   }
 
   interface Color {
-    "text-color": string,
-    "bg-color": string,
+    "text-color": string;
+    "bg-color": string;
   }
   interface TodoConfig {
     Statuses: string[];
@@ -29,10 +29,13 @@ declare global {
     "Priority Colors": Record<string, Color>;
     Tags: string[];
   }
-
-  type ArrayKeys<T> = {
-    [K in keyof T]: T[K] extends string[] ? K : never;
-  }[keyof T];
+  type Change = {
+    key: string;
+    oldValue?: unknown;
+    newValue?: unknown;
+    type: "ADD" | "UPDATE" | "DELETE"
+  };
+  type SideEffect=(change: Change)=>void
 }
 
 export {};

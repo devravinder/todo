@@ -10,6 +10,8 @@ export default function KanbanDashboard() {
   const { activeModal, config, tasks, statuses, changeStatus, setActiveModal } =
     useAppContext();
 
+    console.log({tasks, config})
+
   const newTask = (status?: string): Task => {
     return {
       Title: "",

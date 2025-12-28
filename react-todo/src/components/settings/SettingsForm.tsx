@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MultiTextInputs } from "./MultiTextInputs";
 import { useAppForm } from "../../hooks/useAppForm";
 import { PriorityColors } from "./PriorityColors";
@@ -8,29 +8,32 @@ type FormData = TodoConfig;
 
 type FormProps = {
   data: FormData;
-  onConfigChange: (oldValue: TodoConfig, newValue: TodoConfig) => void;
+  onConfigChange: (value: TodoConfig, sideEffects: Change[]) => void;
   onCancel: VoidFunction;
 };
 
-type TabKey = ArrayKeys<FormData>;
 
 export default function SettingsForm({
   data,
   onConfigChange,
   onCancel,
 }: FormProps) {
+
+  const sideEffects = useRef<Change[]>([])
+
   const form = useAppForm({
     defaultValues: data,
     onSubmit: async ({ value }) => {
       try {
-        onConfigChange(data, value);
+        console.log("====", sideEffects.current)
+        onConfigChange(value, sideEffects.current);
       } catch (error) {
         console.error("Failed to save task", error);
       }
-    },
+    }
   });
 
-  const [tabs] = useState(() => Object.keys(data) as TabKey[]);
+  const [tabs] = useState(() => Object.keys(data) as (keyof TodoConfig)[]);
 
   const [activeTab, setActiveTab] = useState<{
     name: keyof TodoConfig;
@@ -71,7 +74,7 @@ export default function SettingsForm({
           name={activeTab.name}
           children={() =>
             activeTab.isArray ? (
-              <MultiTextInputs label={activeTab.name} />
+              <MultiTextInputs label={activeTab.name} sideEffect={(change)=>sideEffects.current.push(change)} />
             ) : undefined
           }
         />
