@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { withFieldGroup } from "../../hooks/useAppForm";
 import { defaultConfig } from "../../util/constants";
-import ColorPicker from "./ColorPicker";
+import ColorInputGroup from "./ColorInputGroup";
 
 export type Color = { "text-color": string; "bg-color": string };
 
@@ -18,7 +18,7 @@ export const PriorityColors = withFieldGroup({
             <div key={key} className="py-4 px-4 rounded-lg border border-slate-200 shadow-md ">
               <group.Field name={key}>
                 {(field) => (
-                  <ColorPicker
+                  <ColorInputGroup
                     label={key}
                     color={field.state.value}
                     onChange={field.handleChange}
