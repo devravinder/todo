@@ -9,7 +9,7 @@ import {
 } from "react";
 import useProject from "./useProject";
 
-type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined;
+type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | "PROJECT" | undefined;
 
 type AppContextType = {
   config: TodoConfig;
