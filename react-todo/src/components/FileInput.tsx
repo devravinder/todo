@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { SPIN } from "../util/icons";
+import { LOADING } from "../util/icons";
 
 export default function FileInput({
   label,
@@ -45,7 +45,7 @@ export default function FileInput({
       />
 
       {isOpening ? (
-        <span className="animate-spin">{SPIN}</span>
+        <span className="animate-spin inline-block">{LOADING}</span>
       ) : (
         <span>{label}</span>
       )}

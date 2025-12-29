@@ -30,7 +30,7 @@ const ArrayFields = withForm({
         <form.Field name={label} mode="array">
           {(field) => {
             return (
-              <div className="flex flex-col gap-4 max-h-72 p-2 overflow-y-auto">
+              <div className="flex flex-col gap-4 max-h-72 p-4 overflow-y-auto">
                 <NewTextInput
                   label={label}
                   onAdd={(item) => field.pushValue(item)}

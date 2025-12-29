@@ -52,6 +52,8 @@ declare global {
     newValue?: unknown;
     type: "ADD" | "UPDATE" | "DELETE";
   };
+  type FileFormat = "md" | "json";
+
   type SideEffect = (change: Change) => void;
 
   type ArrayKeys<T> = {

@@ -3,7 +3,6 @@ import {
   createFormHookContexts,
   formOptions,
 } from "@tanstack/react-form";
-import { defaultConfig } from "../util/constants";
 
 const { fieldContext, useFieldContext, formContext } = createFormHookContexts();
 
@@ -14,7 +13,7 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
   formContext,
 });
 export const settingsFormOpts = formOptions({
-  defaultValues: defaultConfig,
+  defaultValues: {} as TodoConfig,
 });
 
 export { useFieldContext, useAppForm, withForm, withFieldGroup };

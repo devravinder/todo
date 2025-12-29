@@ -1,9 +1,8 @@
 import useAppContext from "../../hooks/useAppContext";
 import { withFieldGroup } from "../../hooks/useAppForm";
-import { defaultConfig } from "../../util/constants";
 
 export const WordFlowStatuses = withFieldGroup({
-  defaultValues: defaultConfig["Workflow Statuses"],
+  defaultValues: {} as TodoConfig["Workflow Statuses"], // to solve type issue
   render: function Render({ group }) {
       const { config } = useAppContext();
     
@@ -12,7 +11,7 @@ export const WordFlowStatuses = withFieldGroup({
         <h3 className="px-2 text-lg font-medium text-slate-800">
           Manage Workflow
         </h3>
-        <div className="flex flex-col gap-4 max-h-72 p-2 overflow-y-auto">
+        <div className="flex flex-col gap-4 max-h-72 p-4 overflow-y-auto">
           {Object.keys(group.state.values).map((key) => (
             <div
               key={key}

@@ -13,4 +13,5 @@ export const CHECK='ꪜ'
 export const STORE = '🛢️'
 export const JSON_TYPE = '{ }'
 export const MD_TYPE = '🇲 🇩'
-export const SPIN="🌀"
+export const LOADING="⏳"
+export const WAVE_HAND="👋"

@@ -1,10 +1,7 @@
 import React from "react";
-import { ADD, ARCHIVE, FOLDER, SETTINGS } from "../util/icons";
-import { getFileHandler, writeToFile } from "../util/fileHandler";
-import useProject from "../hooks/useProject";
-import { toStoreData } from "../util/converter";
 import useAppContext from "../hooks/useAppContext";
-import { toMarkdown } from "../util/markdownParser";
+import useProject from "../hooks/useProject";
+import { ADD, ARCHIVE, FOLDER, SETTINGS } from "../util/icons";
 
 interface HeaderProps {
   onNewTask: () => void;
@@ -17,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({
   onSettings,
   onArchive,
 }) => {
-  const { addProject, getProjects } = useProject();
+  const { updateProjectData: syncProject } = useProject();
 
   const { tasks, config } = useAppContext();
 
@@ -35,25 +32,6 @@ const Header: React.FC<HeaderProps> = ({
 
         <div className="flex items-center space-x-2">
           <button
-            onClick={async () => {
-              const res = await getProjects();
-
-              console.log({ res });
-
-              const handle = res[0].handle;
-
-              const data = toStoreData(tasks, config);
-
-              const content = JSON.stringify(data, null, 2)
-
-              await writeToFile(handle, content);
-            }}
-            className=" cursor-pointer inline-flex items-center px-3 py-2 bg-slate-100 text-sm font-medium rounded-lg hover:bg-slate-200 "
-          >
-            {"R"}
-          </button>
-
-          <button
             onClick={onNewTask}
             className=" cursor-pointerinline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-none transition-colors"
           >
@@ -61,15 +39,7 @@ const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             onClick={async () => {
-              const handle = await getFileHandler("json");
-
-              const res = await addProject({
-                name: handle?.name || crypto.randomUUID(),
-                handle,
-                lastAccessed: new Date().getTime(),
-              });
-
-              console.log({ res });
+              syncProject(tasks, config);
             }}
             className=" cursor-pointer inline-flex items-center px-3 py-2 bg-slate-100 text-sm font-medium rounded-lg hover:bg-slate-200 "
           >

@@ -127,3 +127,7 @@ export const toMarkdown = (obj, depth = 1) => {
   }
   return md;
 };
+
+export const MarkdownParser = {
+  toJson, toMarkdown
+}

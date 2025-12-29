@@ -12,6 +12,7 @@ export type StoreData = {
   };
 };
 
+export type AppData = {tasks: Task[], config: TodoConfig}
 export const toStoreData = (tasks: Task[], config: TodoConfig) => {
   const data: StoreData = {
     Todo: {

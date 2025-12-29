@@ -7,7 +7,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { syncWithStore } from "../util/syncStore";
+import { defaultConfig } from "../util/constants";
+import useProject, { type Project } from "./useProject";
 
 type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined;
 
@@ -36,10 +37,12 @@ export const SideEffectKey: Partial<{
   Users: "AssignedTo",
 };
 
-export const AppContextProvider = ({ children, defaultConfig, defaultTasks }: { children: ReactNode,defaultConfig: TodoConfig, defaultTasks: Task[]  }) => {
+export const AppContextProvider = ({ children }: { children: ReactNode }) => {
+  const { activeProject, readProjectData } = useProject();
+
   const [config, setConfig] = useState<TodoConfig>(defaultConfig);
   const [activeModal, setActiveModal] = useState<ActiveModal>();
-  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const getSampleNewTask = (status?: string): Task => {
     return {
@@ -139,8 +142,15 @@ export const AppContextProvider = ({ children, defaultConfig, defaultTasks }: { 
   );
 
   useEffect(() => {
-    syncWithStore(tasks, config);
-  }, [tasks, config]);
+    const syncState = async (activeProject?: Project) => {
+      const data = await readProjectData(activeProject);
+
+      setTasks(data.tasks);
+      setConfig(data.config);
+    };
+
+    syncState(activeProject);
+  }, [activeProject, readProjectData]);
 
   return (
     <AppContext.Provider

@@ -1,13 +1,13 @@
 import fs from "fs";
-import { MarkdownParser } from "../util/MarkdownParser";
+import { MarkdownParser } from "../util/MarkdownParser.js";
 
 /**
  * Convert Markdown → JSON
  */
 export const toJson = (
-  from: string = "./todo.md",
-  to: string = "./out.json"
-): void => {
+  from = "./todo.md",
+  to = "./out.json"
+) => {
   const md = fs.readFileSync(from, "utf-8");
   const json = MarkdownParser.toJson(md);
 
@@ -18,9 +18,9 @@ export const toJson = (
  * Convert JSON → Markdown
  */
 export const toMd = (
-  from: string = "./todo.json",
-  to: string = "./out.md"
-): void => {
+  from = "./todo.json",
+  to = "./out.md"
+) => {
   const json = JSON.parse(fs.readFileSync(from, "utf-8"));
   const md = MarkdownParser.toMarkdown(json);
 
@@ -28,5 +28,5 @@ export const toMd = (
 };
 
 // Example usage
-// toMd("./todo.json", "./out.md");
-toJson("./todo.md", "./out.json");
+toMd("./todo.json", "./todo.md");
+// toJson("./todo.md", "./out.json");
