@@ -37,7 +37,7 @@ export const SideEffectKey: Partial<{
 };
 
 export const AppContextProvider = ({ children, defaultConfig, defauleTasks }: { children: ReactNode, defaultConfig: TodoConfig, defauleTasks: Task[] }) => {
-  const { updateProjectData } = useProject();
+  const { updateProjectData, activeProject } = useProject();
 
   const [config, setConfig] = useState<TodoConfig>(defaultConfig);
   const [activeModal, setActiveModal] = useState<ActiveModal>();
@@ -144,10 +144,12 @@ export const AppContextProvider = ({ children, defaultConfig, defauleTasks }: { 
     
     const chnaged = config !==defaultConfig  || tasks !==defauleTasks
 
-    if(chnaged)
-       updateProjectData(tasks, config)
+    if(chnaged){
+      updateProjectData(activeProject,tasks, config)
+    }
       
-  }, [tasks, config, defaultConfig, defauleTasks, updateProjectData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks, config]);
 
   return (
     <AppContext.Provider

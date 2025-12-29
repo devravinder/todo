@@ -63,7 +63,7 @@ export const toStoreData = (tasks: Task[], config: TodoConfig) => {
 export const toAppData = (data: StoreData) => {
   const tasks: Task[] = [];
 
-  Object.keys(data.Todo.Tasks).reduce((pre, status) => {
+  Object.keys(data?.Todo?.Tasks || {}).reduce((pre, status) => {
     pre.push(...Object.values(data.Todo.Tasks[status]));
     return pre;
   }, tasks);

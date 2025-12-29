@@ -1,4 +1,11 @@
-import { toAppData, toStoreData, type StoreData } from "./converter";
+import type { FileError } from "../hooks/useProject";
+import { defaultConfig } from "./constants";
+import {
+  toAppData,
+  toStoreData,
+  type AppData,
+  type StoreData,
+} from "./converter";
 import { FileHandler } from "./FileHandler";
 import { MarkdownParser } from "./MarkdownParser";
 
@@ -8,9 +15,8 @@ export const writeToStore = async (
   fileHandle: FileSystemFileHandle,
   format: FileFormat
 ) => {
+  console.log("write=====", { tasks, config });
   const storeData = toStoreData(tasks, config);
-
-    console.log({storeData})
 
   const content =
     format === "md"
@@ -20,17 +26,34 @@ export const writeToStore = async (
   await FileHandler.write(fileHandle, content);
 };
 
+export type FileReadResult =
+  | {
+      data: AppData;
+    }
+  | { message: FileError };
+
 export const readFromStore = async (
   fileHandle: FileSystemFileHandle,
   format: FileFormat
-) => {
-  const content = await FileHandler.read(fileHandle);
+): Promise<FileReadResult> => {
+  try {
+    const content = await FileHandler.read(fileHandle);
 
-  const storeData = (
-    format === "md" ? MarkdownParser.toJson(content) : JSON.parse(content)
-  ) as StoreData;
+    if (!content) return { data: { config: defaultConfig, tasks: [] } };
 
-  const appData = toAppData(storeData);
+    const storeData = (
+      format === "md" ? MarkdownParser.toJson(content) : JSON.parse(content)
+    ) as StoreData;
 
-  return appData;
+    const data = toAppData(storeData);
+
+    return { data };
+  } catch (error) {
+    // File might be deleted
+    const err = error as { name: "NotFoundError" | string; message: string };
+    if (err.name === "NotFoundError") {
+      return { message: "NotFoundError" };
+    }
+    return { message: err.message as FileError };
+  }
 };

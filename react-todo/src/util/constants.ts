@@ -1,3 +1,5 @@
+import type { FileError } from "../hooks/useProject";
+
 export const DATE_FORMAT = "DD-MMM-YYYY";
 export const FORM_DATE_FORMAT = "YYYY-MM-DD";
 
@@ -81,3 +83,10 @@ export const welcomeData = {
   footer: `⚠️ Supported browsers: Chrome 86+, Edge 86+, Opera 72+`,
   }
 };
+
+
+export const fileErrorMessages :{[Key in FileError]: string} = {
+  "AbortError" :"Folder selection is cancelled, re-try",
+  "NotFoundError" : "Todo file not found, re-start project",
+  "BrowserNotSupports":"Your browser won't support file changes, change browser settings or use another browser"
+}

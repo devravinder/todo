@@ -8,21 +8,23 @@ import {
   type ReactNode,
 } from "react";
 import Welcome from "../components/Welcome";
-import { defaultConfig } from "../util/constants";
 import type { AppData } from "../util/converter";
-import { readFromStore, writeToStore } from "../util/syncStore";
+import {
+  readFromStore,
+  writeToStore,
+  type FileReadResult,
+} from "../util/syncStore";
 import { useIndexedDB } from "./useIndexDB";
 import { useSessionId } from "./useSessionId";
 
 type ProjectContextType = {
   activeProject: Project;
-  addProject: (data: Project) => Promise<IDBValidKey>;
-  getProjects: () => Promise<Project[]>;
-  deleteProject: (id: string) => Promise<void>;
-  updateProject: (project: Project) => Promise<IDBValidKey>;
-  getProject: (id: string) => Promise<Project | undefined>;
-  updateProjectData: (tasks: Task[], config: TodoConfig) => Promise<void>;
-  readProjectData: (project?: Project) => Promise<AppData>;
+  appData: AppData;
+  updateProjectData: (
+    project: Project,
+    tasks: Task[],
+    config: TodoConfig
+  ) => Promise<void>;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -33,13 +35,14 @@ export type Project = {
   fileHandle: FileSystemFileHandle;
   lastAccessed: number;
   env: "CLOUD" | "LOCAL";
-  type: FileFormat | "INDEX_DB";
+  type: FileFormat;
 };
 
 const DB_NAME = "todo-db";
 const STORE_INSTANCE_NAME = "projects";
 const ID_KEY_NAME = "id";
-// const COLLECTION_NAME="Projects"
+
+export type FileError = "AbortError" | "NotFoundError" | "BrowserNotSupports";
 
 export const ProjectContextProvider = ({
   children,
@@ -53,6 +56,10 @@ export const ProjectContextProvider = ({
   keyPath?: string;
 }) => {
   const [activeProject, setActiveProject] = useState<Project>();
+  const [loading, setLoading] = useState(false);
+  const [appData, setAppData] = useState<AppData>();
+  const [fileError, setFileError] = useState<FileError>();
+
   const sessionId = useSessionId();
 
   const db = useIndexedDB<Project>({
@@ -70,20 +77,28 @@ export const ProjectContextProvider = ({
 
   const getProjects = async () => db.getAll(storeName);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getProject = async (id: string) => db.get(storeName, id);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const deleteProject = async (id: string) => db.remove(storeName, id);
 
   const updateProject = async (project: Project) => db.put(storeName, project);
 
-  const updateProjectData = async(tasks: Task[], config: TodoConfig) => {
-    if (activeProject && activeProject.type !== "INDEX_DB")
-      await writeToStore(tasks, config, activeProject.fileHandle, activeProject.type);
+  const updateProjectData = async (
+    project: Project,
+    tasks: Task[],
+    config: TodoConfig
+  ) => {
+    await writeToStore(tasks, config, project.fileHandle, project.type);
   };
 
-  const createAndSetActiveProject = async (
-    fileHandle: FileSystemFileHandle
-  ) => {
+  const readProjectData = async (project: Project): Promise<FileReadResult> => {
+    const data = await readFromStore(project.fileHandle, project.type);
+    return data;
+  };
+
+  const onNewProjectSelect = async (fileHandle: FileSystemFileHandle) => {
     const project: Project = {
       id: sessionId,
       name: fileHandle.name,
@@ -94,22 +109,23 @@ export const ProjectContextProvider = ({
     };
     await addProject(project);
     setActiveProject(project);
-
-    await writeToStore(
-      [],
-      defaultConfig,
-      fileHandle,
-      project.type as FileFormat
-    );
   };
 
-  const readProjectData = async (project?: Project): Promise<AppData> => {
-    if (project && project.type !== "INDEX_DB") {
-      const data = await readFromStore(project.fileHandle, project.type);
-      return data;
-    }
-    return { tasks: [], config: defaultConfig };
-  };
+  useEffect(() => {
+    const syncState = async (project: Project) => {
+      setLoading(true);
+      const result = await readProjectData(project);
+      if ("data" in result) setAppData(result.data);
+      else {
+        setFileError(result.message);
+        if (result.message === "NotFoundError"){
+          await deleteProject(project.id);
+        }
+      }
+      setLoading(false);
+    };
+    if (activeProject) syncState(activeProject);
+  }, [activeProject]);
 
   useLayoutEffect(() => {
     const getLatestProject = async () => {
@@ -128,16 +144,17 @@ export const ProjectContextProvider = ({
     };
 
     getLatestProject();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!activeProject)
+  if (!activeProject || loading || fileError || !appData)
     return (
       <Welcome
+        fileError={fileError}
         onGetStarted={(fileHandleResult) => {
+          setFileError(undefined);
           if ("handle" in fileHandleResult)
-            createAndSetActiveProject(fileHandleResult.handle);
-          else window.alert(fileHandleResult.message);
+            onNewProjectSelect(fileHandleResult.handle);
+          else setFileError(fileHandleResult.message);
         }}
       />
     );
@@ -146,13 +163,8 @@ export const ProjectContextProvider = ({
     <ProjectContext.Provider
       value={{
         activeProject,
-        addProject,
-        getProjects,
-        getProject,
-        deleteProject,
-        updateProject,
         updateProjectData,
-        readProjectData,
+        appData,
       }}
     >
       {children}
@@ -175,23 +187,7 @@ export const WithActiveProjectTasks = ({
 }: {
   children: (data: AppData) => React.ReactNode;
 }) => {
-  const { activeProject, readProjectData } = useProject();
-  const [appData, setAppData] = useState<AppData>();
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const syncState = async () => {
-      setLoading(true);
-      const data = await readProjectData(activeProject);
-      setAppData(data);
-      setLoading(false);
-    };
-
-    syncState();
-  }, [activeProject, readProjectData]);
-
-  if (loading || !appData) return <div className="">Loading</div>;
+  const { appData } = useProject();
 
   return children(appData);
 };
