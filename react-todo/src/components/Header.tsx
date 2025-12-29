@@ -6,12 +6,14 @@ interface HeaderProps {
   onNewTask: () => void;
   onSettings: () => void;
   onArchive: () => void;
+  onProject : ()=>void
 }
 
 const Header: React.FC<HeaderProps> = ({
   onNewTask,
   onSettings,
   onArchive,
+  onProject
 }) => {
   const { activeProject } = useProject();
   return (
@@ -34,9 +36,7 @@ const Header: React.FC<HeaderProps> = ({
             {ADD} New Task
           </button>
           <button
-            onClick={async () => {
-             console.log("====")
-            }}
+            onClick={onProject}
             className=" cursor-pointer inline-flex items-center px-3 py-2 bg-slate-100 text-sm font-medium rounded-lg hover:bg-slate-200 "
           >
             {FOLDER}

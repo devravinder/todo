@@ -1,7 +1,7 @@
-import useFileHandle from "../../hooks/useFileHandler";
-import { welcomeData } from "../../util/constants";
-import type { FileHandleResult } from "../../util/FileHandler";
-import { FOLDER, LOADING } from "../../util/icons";
+import useFileHandle from "../hooks/useFileHandler";
+import { welcomeData } from "../util/constants";
+import type { FileHandleResult } from "../util/FileHandler";
+import { FOLDER, LOADING } from "../util/icons";
 
 export default function Welcome({
   onGetStarted,

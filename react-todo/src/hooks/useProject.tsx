@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import Welcome from "../components/projects/Welcome";
+import Welcome from "../components/Welcome";
 import { defaultConfig } from "../util/constants";
 import type { AppData } from "../util/converter";
 import { readFromStore, writeToStore } from "../util/syncStore";

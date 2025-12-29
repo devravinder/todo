@@ -146,9 +146,7 @@ export const AppContextProvider = ({ children, defaultConfig, defauleTasks }: { 
 
     if(chnaged)
        updateProjectData(tasks, config)
-
-    console.log({chnaged})
-
+      
   }, [tasks, config, defaultConfig, defauleTasks, updateProjectData]);
 
   return (

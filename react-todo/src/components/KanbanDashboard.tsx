@@ -5,6 +5,7 @@ import Header from "./Header";
 import KanbanColumn from "./KanbanColumn";
 import SettingsModal from "./settings/SettingsModal";
 import TaskModal from "./task/TaskModal";
+import ProjectModal from "./projects/ProjectModal";
 
 export default function KanbanDashboard() {
   const {
@@ -56,6 +57,7 @@ export default function KanbanDashboard() {
         onNewTask={() => handleNewTask(config.Statuses[0])}
         onSettings={() => setActiveModal("SETTINGS")}
         onArchive={() => setActiveModal("ARCHIVE")}
+        onProject={() => setActiveModal("PROJECT")}
       />
       <main className="w-full max-w-8xl mx-auto flex-1 flex flex-col overflow-hidden">
         <div className="w-full h-full overflow-auto flex justify-around gap-4 p-8">
@@ -106,6 +108,10 @@ export default function KanbanDashboard() {
 
         <SettingsModal
           isOpen={activeModal === "SETTINGS"}
+          onClose={() => setActiveModal(undefined)}
+        />
+        <ProjectModal
+          isOpen={activeModal === "PROJECT"}
           onClose={() => setActiveModal(undefined)}
         />
       </main>
