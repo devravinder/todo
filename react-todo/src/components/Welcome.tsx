@@ -20,7 +20,7 @@ export default function Welcome({
     <div className="w-full min-h-screen flex items-center justify-center bg-slate-100">
       <div className="rounded-lg w-full h-full sm:h-10/12 sm:w-10/12 md:w-8/12 md:h-10/12 p-20 flex flex-col gap-8 items-center">
         <h2 className="text-4xl font-serif font-semibold text-slate-900">
-          {welcomeData.header} {fileError}
+          {welcomeData.header}
         </h2>
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-row justify-center items-center">

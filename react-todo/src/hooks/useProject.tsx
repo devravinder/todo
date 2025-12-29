@@ -16,6 +16,7 @@ import {
 } from "../util/syncStore";
 import { useIndexedDB } from "./useIndexDB";
 import { useSessionId } from "./useSessionId";
+import { IndexedDb } from "../util/IndexedDb";
 
 type ProjectContextType = {
   activeProject: Project;
@@ -46,14 +47,8 @@ export type FileError = "AbortError" | "NotFoundError" | "BrowserNotSupports";
 
 export const ProjectContextProvider = ({
   children,
-  dbName = DB_NAME,
-  storeName = STORE_INSTANCE_NAME,
-  keyPath = ID_KEY_NAME,
 }: {
   children: ReactNode;
-  dbName?: string;
-  storeName?: string;
-  keyPath?: string;
 }) => {
   const [activeProject, setActiveProject] = useState<Project>();
   const [loading, setLoading] = useState(false);
@@ -63,27 +58,15 @@ export const ProjectContextProvider = ({
   const sessionId = useSessionId();
 
   const db = useIndexedDB<Project>({
-    name: dbName,
+    name: DB_NAME,
     version: 1,
     stores: [
       {
-        name: storeName,
-        keyPath,
+        name: STORE_INSTANCE_NAME,
+        keyPath: ID_KEY_NAME,
       },
     ],
   });
-
-  const addProject = async (data: Project) => db.put(storeName, data);
-
-  const getProjects = async () => db.getAll(storeName);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getProject = async (id: string) => db.get(storeName, id);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const deleteProject = async (id: string) => db.remove(storeName, id);
-
-  const updateProject = async (project: Project) => db.put(storeName, project);
 
   const updateProjectData = async (
     project: Project,
@@ -107,7 +90,7 @@ export const ProjectContextProvider = ({
       env: "LOCAL",
       lastAccessed: new Date().getTime(),
     };
-    await addProject(project);
+    await IndexedDb.addProject(db, STORE_INSTANCE_NAME, project);
     setActiveProject(project);
   };
 
@@ -118,25 +101,25 @@ export const ProjectContextProvider = ({
       if ("data" in result) setAppData(result.data);
       else {
         setFileError(result.message);
-        if (result.message === "NotFoundError"){
-          await deleteProject(project.id);
+        if (result.message === "NotFoundError") {
+          await IndexedDb.deleteProject(db, STORE_INSTANCE_NAME, project.id);
         }
       }
       setLoading(false);
     };
     if (activeProject) syncState(activeProject);
-  }, [activeProject]);
+  }, [activeProject, db]);
 
   useLayoutEffect(() => {
     const getLatestProject = async () => {
-      const projects = await getProjects();
+      const projects = await IndexedDb.getProjects(db, STORE_INSTANCE_NAME);
       if (projects.length) {
         const lastAccessed = projects.sort(
           (f, s) => f.lastAccessed - s.lastAccessed
         )[0];
         setActiveProject(lastAccessed);
 
-        await updateProject({
+        await IndexedDb.updateProject(db, STORE_INSTANCE_NAME, {
           ...lastAccessed,
           lastAccessed: new Date().getTime(),
         });
@@ -144,7 +127,7 @@ export const ProjectContextProvider = ({
     };
 
     getLatestProject();
-  }, []);
+  }, [db]);
 
   if (!activeProject || loading || fileError || !appData)
     return (

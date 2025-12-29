@@ -15,7 +15,6 @@ export const writeToStore = async (
   fileHandle: FileSystemFileHandle,
   format: FileFormat
 ) => {
-  console.log("write=====", { tasks, config });
   const storeData = toStoreData(tasks, config);
 
   const content =
