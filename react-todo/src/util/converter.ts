@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import { FORM_DATE_FORMAT } from "./constants";
+
 const ID_TITLE_DELIMETER = " | " as const;
 type ID_TITLE_DELIMETER = typeof ID_TITLE_DELIMETER;
 
@@ -12,7 +15,31 @@ export type StoreData = {
   };
 };
 
-export type AppData = {tasks: Task[], config: TodoConfig}
+type TaskKey = keyof Task;
+
+export const serializers: Partial<{
+  [K in TaskKey]: (v: Task[K]) => string;
+}> = {
+  dueDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
+  createdDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
+  startedDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
+  completedDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
+};
+
+const serializeTask = (task: Task) => {
+  const some = (Object.keys(serializers) as TaskKey[]).reduce((pre, key) => {
+    if (key in serializers && task[key]) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (pre as any)[key] = serializers[key]?.(task[key] as any);
+    }
+
+    return pre;
+  }, {} as Task);
+
+  return { ...task, ...some };
+};
+
+export type AppData = { tasks: Task[]; config: TodoConfig };
 export const toStoreData = (tasks: Task[], config: TodoConfig) => {
   const data: StoreData = {
     Todo: {
@@ -24,7 +51,8 @@ export const toStoreData = (tasks: Task[], config: TodoConfig) => {
   data.Todo.Tasks = tasks.reduce((pre, task) => {
     if (!pre[task.Status]) pre[task.Status] = {};
 
-    pre[task.Status][`${task.Id}${ID_TITLE_DELIMETER}${task.Title}`] = task;
+    pre[task.Status][`${task.Id}${ID_TITLE_DELIMETER}${task.Title}`] =
+      serializeTask(task);
 
     return pre;
   }, {} as StoreTasks);

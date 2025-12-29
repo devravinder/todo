@@ -10,6 +10,8 @@ export const writeToStore = async (
 ) => {
   const storeData = toStoreData(tasks, config);
 
+    console.log({storeData})
+
   const content =
     format === "md"
       ? MarkdownParser.toMarkdown(storeData as unknown as JSONObject)

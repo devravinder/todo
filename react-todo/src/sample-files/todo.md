@@ -83,10 +83,10 @@
 - Description: Initialize Git repository and base project structure.
 - Priority: 🔴 Critical
 - AssignedTo: Ravinder
-- createdDate: 2025-01-10T00:00:00.000Z
-- startedDate: 2025-01-10T00:00:00.000Z
-- dueDate: 2025-01-12T00:00:00.000Z
-- completedDate: 2025-01-12T00:00:00.000Z
+- createdDate: 2025-01-10
+- startedDate: 2025-01-10
+- dueDate: 2025-01-12
+- completedDate: 2025-01-12
 - Notes: Initial setup completed successfully.
 - Status: ✅ Done
 
@@ -107,10 +107,10 @@
 - Description: Apply color coding based on priority.
 - Priority: 🟢 Low
 - AssignedTo: Reddy
-- createdDate: 2025-01-15T00:00:00.000Z
-- startedDate: 2025-01-15T00:00:00.000Z
-- dueDate: 2025-01-16T00:00:00.000Z
-- completedDate: 2025-01-16T00:00:00.000Z
+- createdDate: 2025-01-15
+- startedDate: 2025-01-15
+- dueDate: 2025-01-16
+- completedDate: 2025-01-16
 - Notes: Looks good.
 - Status: ✅ Done
 
@@ -133,9 +133,9 @@
 - Description: Create layout wireframes and UI structure.
 - Priority: 🟠 High
 - AssignedTo: Reddy
-- createdDate: 2025-01-11T00:00:00.000Z
-- startedDate: 2025-01-12T00:00:00.000Z
-- dueDate: 2025-01-15T00:00:00.000Z
+- createdDate: 2025-01-11
+- startedDate: 2025-01-12
+- dueDate: 2025-01-15
 - Notes: Waiting for feedback.
 - Status: 🚀 In Progress
 
@@ -156,9 +156,9 @@
 - Description: Create task schema and validation logic.
 - Priority: 🟡 Medium
 - AssignedTo: Ravinder
-- createdDate: 2025-01-12T00:00:00.000Z
-- startedDate: 2025-01-12T00:00:00.000Z
-- dueDate: 2025-01-14T00:00:00.000Z
+- createdDate: 2025-01-12
+- startedDate: 2025-01-12
+- dueDate: 2025-01-14
 - Notes: Schema almost done.
 - Status: 🚀 In Progress
 
@@ -179,9 +179,9 @@
 - Description: Connect frontend with backend APIs.
 - Priority: 🟠 High
 - AssignedTo: Ravinder
-- createdDate: 2025-01-14T00:00:00.000Z
-- startedDate: 2025-01-15T00:00:00.000Z
-- dueDate: 2025-01-18T00:00:00.000Z
+- createdDate: 2025-01-14
+- startedDate: 2025-01-15
+- dueDate: 2025-01-18
 - Notes: Auth pending.
 - Status: 🚀 In Progress
 
@@ -203,10 +203,10 @@
 - Description: Render task list with statuses.
 - Priority: 🟠 High
 - AssignedTo: Ravinder
-- createdDate: 2025-01-13T00:00:00.000Z
-- dueDate: 2025-01-16T00:00:00.000Z
+- createdDate: 2025-01-13
 - Notes: Blocked by API readiness.
 - Status: 📝 To Do
+- dueDate: 2025-12-31
 
 ##### Tags
 
@@ -225,8 +225,8 @@
 - Title: Add Drag and Drop
 - Description: Enable moving tasks between statuses.
 - Priority: 🟠 High
-- createdDate: 2025-01-13T00:00:00.000Z
-- dueDate: 2025-01-17T00:00:00.000Z
+- createdDate: 2025-01-13
+- dueDate: 2025-01-17
 - Status: 📝 To Do
 
 ##### Tags
@@ -246,8 +246,8 @@
 - Description: Add tests for task logic.
 - Priority: 🟡 Medium
 - AssignedTo: Ravinder
-- createdDate: 2025-01-16T00:00:00.000Z
-- dueDate: 2025-01-19T00:00:00.000Z
+- createdDate: 2025-01-16
+- dueDate: 2025-01-19
 - Status: 📝 To Do
 
 ##### Tags
@@ -267,9 +267,9 @@
 - Title: Documentation Update
 - Description: Update README with usage instructions.
 - Priority: 🟢 Low
-- createdDate: 2025-01-17T00:00:00.000Z
-- startedDate: 2025-01-17T00:00:00.000Z
-- dueDate: 2025-01-18T00:00:00.000Z
+- createdDate: 2025-01-17
+- startedDate: 2025-01-17
+- dueDate: 2025-01-18
 - Status: 👀 In Review
 
 ##### Tags
@@ -290,10 +290,10 @@
 - Description: Move completed tasks to archive.
 - Priority: 🟢 Low
 - AssignedTo: Reddy
-- createdDate: 2025-01-18T00:00:00.000Z
-- startedDate: 2025-01-18T00:00:00.000Z
-- dueDate: 2025-01-18T00:00:00.000Z
-- completedDate: 2025-01-18T00:00:00.000Z
+- createdDate: 2025-01-18
+- startedDate: 2025-01-18
+- dueDate: 2025-01-18
+- completedDate: 2025-01-18
 - Notes: Cleanup done.
 - Status: 📦 Archives
 

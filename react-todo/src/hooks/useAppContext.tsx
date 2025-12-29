@@ -7,8 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { defaultConfig } from "../util/constants";
-import useProject, { type Project } from "./useProject";
+import useProject from "./useProject";
 
 type ActiveModal = "TASK" | "ARCHIVE" | "SETTINGS" | undefined;
 
@@ -37,12 +36,12 @@ export const SideEffectKey: Partial<{
   Users: "AssignedTo",
 };
 
-export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const { activeProject, readProjectData } = useProject();
+export const AppContextProvider = ({ children, defaultConfig, defauleTasks }: { children: ReactNode, defaultConfig: TodoConfig, defauleTasks: Task[] }) => {
+  const { updateProjectData } = useProject();
 
   const [config, setConfig] = useState<TodoConfig>(defaultConfig);
   const [activeModal, setActiveModal] = useState<ActiveModal>();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(defauleTasks);
 
   const getSampleNewTask = (status?: string): Task => {
     return {
@@ -142,15 +141,15 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    const syncState = async (activeProject?: Project) => {
-      const data = await readProjectData(activeProject);
+    
+    const chnaged = config !==defaultConfig  || tasks !==defauleTasks
 
-      setTasks(data.tasks);
-      setConfig(data.config);
-    };
+    if(chnaged)
+       updateProjectData(tasks, config)
 
-    syncState(activeProject);
-  }, [activeProject, readProjectData]);
+    console.log({chnaged})
+
+  }, [tasks, config, defaultConfig, defauleTasks, updateProjectData]);
 
   return (
     <AppContext.Provider

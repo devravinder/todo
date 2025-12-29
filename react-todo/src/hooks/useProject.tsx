@@ -2,6 +2,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useLayoutEffect,
   useState,
   type ReactNode,
@@ -14,13 +15,13 @@ import { useIndexedDB } from "./useIndexDB";
 import { useSessionId } from "./useSessionId";
 
 type ProjectContextType = {
-  activeProject: Project | undefined;
+  activeProject: Project;
   addProject: (data: Project) => Promise<IDBValidKey>;
   getProjects: () => Promise<Project[]>;
   deleteProject: (id: string) => Promise<void>;
   updateProject: (project: Project) => Promise<IDBValidKey>;
   getProject: (id: string) => Promise<Project | undefined>;
-  updateProjectData: (tasks: Task[], config: TodoConfig) => void;
+  updateProjectData: (tasks: Task[], config: TodoConfig) => Promise<void>;
   readProjectData: (project?: Project) => Promise<AppData>;
 };
 
@@ -75,9 +76,9 @@ export const ProjectContextProvider = ({
 
   const updateProject = async (project: Project) => db.put(storeName, project);
 
-  const updateProjectData = (tasks: Task[], config: TodoConfig) => {
+  const updateProjectData = async(tasks: Task[], config: TodoConfig) => {
     if (activeProject && activeProject.type !== "INDEX_DB")
-      writeToStore(tasks, config, activeProject.fileHandle, activeProject.type);
+      await writeToStore(tasks, config, activeProject.fileHandle, activeProject.type);
   };
 
   const createAndSetActiveProject = async (
@@ -168,3 +169,29 @@ export default function useProject() {
 
   return context;
 }
+
+export const WithActiveProjectTasks = ({
+  children,
+}: {
+  children: (data: AppData) => React.ReactNode;
+}) => {
+  const { activeProject, readProjectData } = useProject();
+  const [appData, setAppData] = useState<AppData>();
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const syncState = async () => {
+      setLoading(true);
+      const data = await readProjectData(activeProject);
+      setAppData(data);
+      setLoading(false);
+    };
+
+    syncState();
+  }, [activeProject, readProjectData]);
+
+  if (loading || !appData) return <div className="">Loading</div>;
+
+  return children(appData);
+};
