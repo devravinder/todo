@@ -182,7 +182,7 @@ export default function useProject() {
   return context;
 }
 
-export const WithActiveProjectTasks = ({
+export const WithActiveProjectData = ({
   children,
 }: {
   children: (data: AppData) => React.ReactNode;
