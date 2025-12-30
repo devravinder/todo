@@ -17,7 +17,7 @@ type FormProps = {
 };
 
 export default function ProjectForm({ onCancel, data, onSave }: FormProps) {
-  const { getSampleNewProject } = useProject();
+  const { getSampleNewProject, deleteProject } = useProject();
   const [error, setError] = useState("");
 
   const form = useAppForm({
@@ -172,7 +172,8 @@ export default function ProjectForm({ onCancel, data, onSave }: FormProps) {
                                     disabled={
                                       data.activeProjectId === project.id
                                     }
-                                    onClick={() => {
+                                    onClick={async() => {
+                                      await deleteProject(project.id)
                                       field.removeValue(i);
                                     }}
                                     className="cursor-pointer px-4 py-2 text-red-500 disabled:cursor-not-allowed disabled:bg-gray-300 bg-red-100 hover:bg-red-200 rounded-lg"

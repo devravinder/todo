@@ -32,7 +32,8 @@ type ProjectContextType = {
   getSampleNewProject: (fileHandle: FileSystemFileHandle) => Project;
   getProjects: () => Promise<Project[]>;
   switchActiveProject: (project: Project) => void;
-  updateProejct: (project: Project) => Promise<IDBValidKey>;
+  updateProject: (project: Project) => Promise<IDBValidKey>;
+  deleteProject: (id: string) => Promise<void>
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -100,6 +101,9 @@ export const ProjectContextProvider = ({
 
   const updateProject = async (project: Project) =>
     IndexedDb.updateProject(db, STORE_INSTANCE_NAME, project);
+
+
+  const deleteProject=async(id:string)=>IndexedDb.deleteProject(db,STORE_INSTANCE_NAME,id)
 
   const readProjectData = async (project: Project): Promise<FileReadResult> => {
     const data = await readFromStore(project.fileHandle, project.type);
@@ -186,7 +190,8 @@ export const ProjectContextProvider = ({
         getSampleNewProject,
         getProjects,
         switchActiveProject,
-        updateProejct: updateProject,
+        updateProject,
+        deleteProject,
         appData,
       }}
     >
