@@ -86,7 +86,7 @@ export const ProjectContextProvider = ({
     const id = crypto.randomUUID();
     const project: Project = {
       id,
-      name: `${fileHandle.name} | ${id}`,
+      name: `Todo-${id.slice(0,3)}`,
       type: fileHandle.name.includes(".md") ? "md" : "json",
       fileHandle,
       env: "LOCAL",
