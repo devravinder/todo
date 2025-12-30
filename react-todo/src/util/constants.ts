@@ -2,6 +2,7 @@ import type { FileError } from "./syncStore";
 
 export const DATE_FORMAT = "DD-MMM-YYYY";
 export const FORM_DATE_FORMAT = "YYYY-MM-DD";
+export const DB_DATE_FORMAT = "YYYY-MM-DD hh:mm:ss:SSS"
 
 export const defaultConfig: TodoConfig = {
   Statuses: [

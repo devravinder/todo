@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { FORM_DATE_FORMAT } from "./constants";
+import { DB_DATE_FORMAT } from "./constants";
 
 const ID_TITLE_DELIMETER = " | " as const;
 type ID_TITLE_DELIMETER = typeof ID_TITLE_DELIMETER;
@@ -15,28 +15,58 @@ export type StoreData = {
   };
 };
 
-type TaskKey = keyof Task;
+type TaskNonStringKeys = NonStringKeys<Task>;
 
-export const serializers: Partial<{
-  [K in TaskKey]: (v: Task[K]) => string;
+export const serializers: Required<{
+  [K in TaskNonStringKeys]: (v: Task[K]) => string;
 }> = {
-  dueDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
-  createdDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
-  startedDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
-  completedDate: (v) => dayjs(v).format(FORM_DATE_FORMAT),
+  dueDate: (v) => dayjs(v).format(DB_DATE_FORMAT),
+  createdDate: (v) => dayjs(v).format(DB_DATE_FORMAT),
+  startedDate: (v) => dayjs(v).format(DB_DATE_FORMAT),
+  completedDate: (v) => dayjs(v).format(DB_DATE_FORMAT),
+  lastModifiedDate: (v) => dayjs(v).format(DB_DATE_FORMAT),
+};
+
+export const deSerializers: Required<{
+  [K in TaskNonStringKeys]: (v: Task[K]) => Task[K];
+}> = {
+  dueDate: (v) => dayjs(v).toDate(),
+  createdDate: (v) => dayjs(v).toDate(),
+  startedDate: (v) => dayjs(v).toDate(),
+  completedDate: (v) => dayjs(v).toDate(),
+  lastModifiedDate: (v) => dayjs(v).toDate(),
 };
 
 const serializeTask = (task: Task) => {
-  const some = (Object.keys(serializers) as TaskKey[]).reduce((pre, key) => {
-    if (key in serializers && task[key]) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (pre as any)[key] = serializers[key]?.(task[key] as any);
-    }
+  const modified = (Object.keys(serializers) as TaskNonStringKeys[]).reduce(
+    (pre, key) => {
+      if (key in serializers && task[key]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (pre as any)[key] = serializers[key]?.(task[key] as any);
+      }
 
-    return pre;
-  }, {} as Task);
+      return pre;
+    },
+    {} as Task
+  );
 
-  return { ...task, ...some };
+  return { ...task, ...modified };
+};
+
+const deSerializeTask = (task: Task) => {
+  const modified = (Object.keys(deSerializers) as TaskNonStringKeys[]).reduce(
+    (pre, key) => {
+      if (key in deSerializers && task[key]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (pre as any)[key] = deSerializers[key]?.(task[key] as any);
+      }
+
+      return pre;
+    },
+    {} as Task
+  );
+
+  return { ...task, ...modified };
 };
 
 export type AppData = { tasks: Task[]; config: TodoConfig };
@@ -61,12 +91,16 @@ export const toStoreData = (tasks: Task[], config: TodoConfig) => {
 };
 
 export const toAppData = (data: StoreData) => {
-  const tasks: Task[] = [];
+  const nonSerialized: Task[] = [];
 
   Object.keys(data?.Todo?.Tasks || {}).reduce((pre, status) => {
     pre.push(...Object.values(data.Todo.Tasks[status]));
     return pre;
-  }, tasks);
+  }, nonSerialized);
 
+  const tasks = nonSerialized.map(deSerializeTask);
   return { tasks, config: data.Todo["⚙️ Configuration"] };
 };
+
+export const sortDsc = (f: Task, s: Task) =>
+  (s.lastModifiedDate?.getTime() || 0) - (f.lastModifiedDate?.getTime() || 0);

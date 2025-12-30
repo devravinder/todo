@@ -52,6 +52,7 @@ export const AppContextProvider = ({ children, defaultConfig, defauleTasks }: { 
       Priority: config.Priorities[config.Priorities.length - 1],
       createdDate: new Date(),
       dueDate: new Date(),
+      lastModifiedDate: new Date(),
       Tags: [],
       Subtasks: [],
     };
@@ -91,7 +92,7 @@ export const AppContextProvider = ({ children, defaultConfig, defauleTasks }: { 
       }
 
       setTasks((pre) =>
-        pre.map((old) => (id === old.Id ? { ...old, ...task } : old))
+        pre.map((old) => (id === old.Id ? { ...old, ...task, lastModifiedDate: new Date() } : old))
       );
     }
   };

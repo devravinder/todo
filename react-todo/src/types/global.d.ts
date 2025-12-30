@@ -26,6 +26,7 @@ declare global {
     startedDate?: Date;
     dueDate: Date;
     completedDate?: Date;
+    lastModifiedDate?: Date;
     Tags: string[];
     Subtasks: string[];
     Notes: string;
@@ -63,6 +64,13 @@ declare global {
   type JSONObject = {
   [key: string]: string | string[] | JSONObject;
 };
+type NonStringKeysWithUndefined<T> = {
+  [K in keyof T]: NonNullable<T[K]> extends string | string[] ? never : K
+}[keyof T];
+
+
+type NonStringKeys<T> = Exclude<NonStringKeysWithUndefined<T>, undefined>
+
 }
 
 export {};

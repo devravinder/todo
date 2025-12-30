@@ -1,6 +1,7 @@
 import React from "react";
 import TaskCard from "./task/TaskCard";
 import { ADD } from "../util/icons";
+import { sortDsc as sortDesc } from "../util/converter";
 
 interface KanbanColumnProps {
   title: string;
@@ -47,7 +48,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
         onDrop={onDrop}
         onDragOver={onDragOver}
       >
-        {tasks.map((task) => (
+        {tasks.sort(sortDesc).map((task) => (
           <div
             key={task.Id}
             draggable
