@@ -1,4 +1,3 @@
-import type { FileError } from "../hooks/state-hooks/useProject";
 import { defaultConfig } from "./constants";
 import {
   toAppData,
@@ -8,6 +7,11 @@ import {
 } from "./converter";
 import { FileHandler } from "./FileHandler";
 import { MarkdownParser } from "./MarkdownParser";
+
+export type FileError = {
+  name: "AbortError" | "NotFoundError" | "BrowserNotSupports" | "NotAllowedError",
+  message: string
+};
 
 export const writeToStore = async (
   tasks: Task[],
@@ -29,7 +33,7 @@ export type FileReadResult =
   | {
       data: AppData;
     }
-  | { message: FileError };
+  | { error: FileError };
 
 export const readFromStore = async (
   fileHandle: FileSystemFileHandle,
@@ -47,12 +51,9 @@ export const readFromStore = async (
     const data = toAppData(storeData);
 
     return { data };
-  } catch (error) {
+  } catch (err) {
     // File might be deleted
-    const err = error as { name: "NotFoundError" | string; message: string };
-    if (err.name === "NotFoundError") {
-      return { message: "NotFoundError" };
-    }
-    return { message: err.message as FileError };
+    const error = err as FileError;
+    return {error}
   }
 };

@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -12,11 +13,13 @@ import type { AppData } from "../../util/converter";
 import {
   readFromStore,
   writeToStore,
+  type FileError,
   type FileReadResult,
 } from "../../util/syncStore";
 import { useIndexedDB } from "../useIndexDB";
 import { useSessionId } from "../useSessionId";
 import { IndexedDb } from "../../util/IndexedDb";
+import type { FileHandleResult } from "../../util/FileHandler";
 
 type ProjectContextType = {
   activeProject: Project;
@@ -26,7 +29,7 @@ type ProjectContextType = {
     tasks: Task[],
     config: TodoConfig
   ) => Promise<void>;
-  getSampleNewProject: (fileHandle: FileSystemFileHandle) => Project
+  getSampleNewProject: (fileHandle: FileSystemFileHandle) => Project;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -38,14 +41,12 @@ export type Project = {
   lastAccessed: number;
   env: "CLOUD" | "LOCAL";
   type: FileFormat;
-  sessionId?: string
+  sessionId?: string;
 };
 
 const DB_NAME = "todo-db";
 const STORE_INSTANCE_NAME = "projects";
 const ID_KEY_NAME = "id";
-
-export type FileError = "AbortError" | "NotFoundError" | "BrowserNotSupports";
 
 export const ProjectContextProvider = ({
   children,
@@ -78,7 +79,7 @@ export const ProjectContextProvider = ({
     await writeToStore(tasks, config, project.fileHandle, project.type);
   };
 
-  const getSampleNewProject=(fileHandle: FileSystemFileHandle)=>{
+  const getSampleNewProject = (fileHandle: FileSystemFileHandle) => {
     const project: Project = {
       id: crypto.randomUUID(),
       name: fileHandle.name,
@@ -86,9 +87,9 @@ export const ProjectContextProvider = ({
       fileHandle,
       env: "LOCAL",
       lastAccessed: new Date().getTime(),
-    }
-    return project
-  }
+    };
+    return project;
+  };
 
   const readProjectData = async (project: Project): Promise<FileReadResult> => {
     const data = await readFromStore(project.fileHandle, project.type);
@@ -99,10 +100,27 @@ export const ProjectContextProvider = ({
     const project: Project = {
       ...getSampleNewProject(fileHandle),
       id: sessionId,
-      sessionId
+      sessionId,
     };
     await IndexedDb.addProject(db, STORE_INSTANCE_NAME, project);
     setActiveProject(project);
+  };
+
+  const onProjectFileError = useCallback(
+    async (error?: FileError, project?: Project) => {
+      setFileError(error);
+      if (project && (error?.name === "NotFoundError" || error?.name === "NotAllowedError")) {
+        await IndexedDb.deleteProject(db, STORE_INSTANCE_NAME, project.id);
+      }
+    },
+    [setFileError, db]
+  );
+
+  const onGetStarted = (fileHandleResult: FileHandleResult) => {
+    setFileError(undefined);
+    if ("handle" in fileHandleResult)
+      onNewProjectSelect(fileHandleResult.handle);
+    else onProjectFileError(fileHandleResult.error);
   };
 
   useEffect(() => {
@@ -111,15 +129,12 @@ export const ProjectContextProvider = ({
       const result = await readProjectData(project);
       if ("data" in result) setAppData(result.data);
       else {
-        setFileError(result.message);
-        if (result.message === "NotFoundError") {
-          await IndexedDb.deleteProject(db, STORE_INSTANCE_NAME, project.id);
-        }
+        onProjectFileError(result.error, project);
       }
       setLoading(false);
     };
     if (activeProject) syncState(activeProject);
-  }, [activeProject, db]);
+  }, [activeProject, db, onProjectFileError]);
 
   useLayoutEffect(() => {
     const getLatestProject = async () => {
@@ -141,17 +156,7 @@ export const ProjectContextProvider = ({
   }, [db]);
 
   if (!activeProject || loading || fileError || !appData)
-    return (
-      <Welcome
-        fileError={fileError}
-        onGetStarted={(fileHandleResult) => {
-          setFileError(undefined);
-          if ("handle" in fileHandleResult)
-            onNewProjectSelect(fileHandleResult.handle);
-          else setFileError(fileHandleResult.message);
-        }}
-      />
-    );
+    return <Welcome fileError={fileError} onGetStarted={onGetStarted} />;
 
   return (
     <ProjectContext.Provider

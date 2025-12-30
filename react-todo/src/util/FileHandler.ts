@@ -1,4 +1,4 @@
-import type { FileError } from "../hooks/state-hooks/useProject";
+import type { FileError } from "./syncStore";
 
 const MARKDOWN_FILE = "todo.md";
 const JSON_FILE = "todo.json";
@@ -7,14 +7,14 @@ export type FileHandleResult =
   | {
       handle: FileSystemFileHandle;
     }
-  | { message: FileError };
+  | { error: FileError };
 
 const getHandle = async (
   fileFormat: FileFormat = "md"
 ): Promise<FileHandleResult> => {
   try {
     if (!("showDirectoryPicker" in window))
-      return { message: "BrowserNotSupports" };
+      return { error: {name:"BrowserNotSupports", message:"BrowserNotSupports"} };
 
     const dirHandle = await window?.showDirectoryPicker();
 
@@ -44,12 +44,9 @@ const getHandle = async (
       );
       return { handle };
     }
-  } catch (error) {
-    const err = error as { name: "AbortError" | string; message: string };
-    if (err.name === "AbortError") {
-      return { message: "AbortError" };
-    }
-    return { message: err.message as FileError };
+  } catch (e) {
+    const error = e as FileError;
+    return { error };
   }
 };
 
