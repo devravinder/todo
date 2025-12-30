@@ -30,6 +30,9 @@ type ProjectContextType = {
     config: TodoConfig
   ) => Promise<void>;
   getSampleNewProject: (fileHandle: FileSystemFileHandle) => Project;
+  getProjects: () => Promise<Project[]>;
+  setActiveProject: (project: Project) => void;
+  updateProejct: (project: Project) => Promise<IDBValidKey>;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -53,7 +56,7 @@ export const ProjectContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [activeProject, setActiveProject] = useState<Project>();
+  const [activeProject, setCProject] = useState<Project>();
   const [loading, setLoading] = useState(false);
   const [appData, setAppData] = useState<AppData>();
   const [fileError, setFileError] = useState<FileError>();
@@ -80,16 +83,23 @@ export const ProjectContextProvider = ({
   };
 
   const getSampleNewProject = (fileHandle: FileSystemFileHandle) => {
+    const id = crypto.randomUUID();
     const project: Project = {
-      id: crypto.randomUUID(),
-      name: fileHandle.name,
+      id,
+      name: `${id} | ${fileHandle.name}`,
       type: fileHandle.name.includes(".md") ? "md" : "json",
       fileHandle,
       env: "LOCAL",
-      lastAccessed: new Date().getTime(),
+      lastAccessed: new Date().getTime() - 1,
     };
     return project;
   };
+
+  const getProjects = async () =>
+    IndexedDb.getProjects(db, STORE_INSTANCE_NAME);
+
+  const updateProject = async (project: Project) =>
+    IndexedDb.updateProject(db, STORE_INSTANCE_NAME, project);
 
   const readProjectData = async (project: Project): Promise<FileReadResult> => {
     const data = await readFromStore(project.fileHandle, project.type);
@@ -103,13 +113,16 @@ export const ProjectContextProvider = ({
       sessionId,
     };
     await IndexedDb.addProject(db, STORE_INSTANCE_NAME, project);
-    setActiveProject(project);
+    setCProject(project);
   };
 
   const onProjectFileError = useCallback(
     async (error?: FileError, project?: Project) => {
       setFileError(error);
-      if (project && (error?.name === "NotFoundError" || error?.name === "NotAllowedError")) {
+      if (
+        project &&
+        (error?.name === "NotFoundError" || error?.name === "NotAllowedError")
+      ) {
         await IndexedDb.deleteProject(db, STORE_INSTANCE_NAME, project.id);
       }
     },
@@ -123,6 +136,14 @@ export const ProjectContextProvider = ({
     else onProjectFileError(fileHandleResult.error);
   };
 
+  const switchActiveProject=async(project:Project)=>{
+
+        project.lastAccessed = new Date().getTime()
+        setCProject(project);
+
+        await updateProject(project);
+  }
+
   useEffect(() => {
     const syncState = async (project: Project) => {
       setLoading(true);
@@ -134,26 +155,23 @@ export const ProjectContextProvider = ({
       setLoading(false);
     };
     if (activeProject) syncState(activeProject);
-  }, [activeProject, db, onProjectFileError]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProject]);
 
   useLayoutEffect(() => {
     const getLatestProject = async () => {
       const projects = await IndexedDb.getProjects(db, STORE_INSTANCE_NAME);
       if (projects.length) {
         const lastAccessed = projects.sort(
-          (f, s) => f.lastAccessed - s.lastAccessed
+          (f, s) => s.lastAccessed - f.lastAccessed
         )[0];
-        setActiveProject(lastAccessed);
-
-        await IndexedDb.updateProject(db, STORE_INSTANCE_NAME, {
-          ...lastAccessed,
-          lastAccessed: new Date().getTime(),
-        });
+        switchActiveProject(lastAccessed);
       }
     };
 
     getLatestProject();
-  }, [db]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!activeProject || loading || fileError || !appData)
     return <Welcome fileError={fileError} onGetStarted={onGetStarted} />;
@@ -164,6 +182,9 @@ export const ProjectContextProvider = ({
         activeProject,
         updateProjectData,
         getSampleNewProject,
+        getProjects,
+        setActiveProject: setCProject,
+        updateProejct: updateProject,
         appData,
       }}
     >

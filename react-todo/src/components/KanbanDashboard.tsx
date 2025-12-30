@@ -110,10 +110,11 @@ export default function KanbanDashboard() {
           isOpen={activeModal === "SETTINGS"}
           onClose={() => setActiveModal(undefined)}
         />
-        <ProjectModal
-          isOpen={activeModal === "PROJECT"}
+        {/* renders new compenent on activeModal === "PROJECT" is true  */}
+        {activeModal === "PROJECT" ? <ProjectModal
           onClose={() => setActiveModal(undefined)}
-        />
+        /> : undefined }
+        
       </main>
     </div>
   );
