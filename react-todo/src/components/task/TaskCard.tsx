@@ -1,7 +1,7 @@
 import React from "react";
 import { CALENDER, CLOCK, EDIT, USER } from "../../util/icons";
 import useAppContext from "../../hooks/state-hooks/useAppContext";
- import dayjs from "dayjs";
+import dayjs from "dayjs";
 import { DATE_FORMAT } from "../../util/constants";
 
 interface TaskCardProps {
@@ -11,26 +11,34 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
-  const {config} = useAppContext()
-  const completedSubtasks = task.Subtasks.filter((st) => st.includes("[x] ")).length;
+  const { config } = useAppContext();
+  const completedSubtasks = task.Subtasks.filter((st) =>
+    st.includes("[x] ")
+  ).length;
   const totalSubtasks = task.Subtasks.length;
+
+  const onTaskClick = (
+    e:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    onEdit(task);
+  };
 
   return (
     <div
-      className={`flex flex-col gap-6 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow ${
+      onClick={onTaskClick}
+      className={`cursor-pointer flex flex-col gap-6 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow ${
         isDragging ? "opacity-50 rotate-2" : ""
       }`}
     >
       <div className="flex flex-col gap-1">
         <div className="flex flex-row justify-between">
-          <span className="text-xs text-slate-500 line-clamp-1">#{task.Id}</span>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(task);
-            }}
-            className="cursor-pointer text-xs"
-          >
+          <span className="text-xs text-slate-500 line-clamp-1">
+            #{task.Id}
+          </span>
+          <button onClick={onTaskClick} className="cursor-pointer text-xs">
             {EDIT}
           </button>
         </div>
@@ -47,9 +55,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-1">
-          <span className="text-xs py-1 px-2 rounded-md bg-emerald-100"
-          style={{
-              backgroundColor: config["Priority Colors"][task.Priority]?.["bg-color"],
+          <span
+            className="text-xs py-1 px-2 rounded-md bg-emerald-100"
+            style={{
+              backgroundColor:
+                config["Priority Colors"][task.Priority]?.["bg-color"],
               color: config["Priority Colors"][task.Priority]?.["text-color"],
             }}
           >
@@ -94,9 +104,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, isDragging }) => {
                 }}
               />
             </div>
-              <span className="text-xs text-slate-600">
-                {completedSubtasks}/{totalSubtasks}
-              </span>
+            <span className="text-xs text-slate-600">
+              {completedSubtasks}/{totalSubtasks}
+            </span>
           </div>
         )}
 
