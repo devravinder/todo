@@ -2,11 +2,12 @@ import NewTextInput from "../settings/NewTextInput";
 import { MINUS } from "../../util/icons";
 import { settingsFormOpts, withForm } from "../../hooks/useAppForm";
 import { useRef } from "react";
+import type { ProjectFormData } from "./ProjectForm";
 
-export type TodoArrayField = ArrayKeys<TodoConfig>;
+export type ArrayField = ArrayKeys<ProjectFormData>;
 
 type ArrayFieldsProps = {
-  label: TodoArrayField;
+  label: ArrayField;
   onSideEffect?: (change: Change) => void;
 };
 
