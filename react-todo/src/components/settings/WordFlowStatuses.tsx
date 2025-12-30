@@ -1,4 +1,4 @@
-import useAppContext from "../../hooks/useAppContext";
+import useAppContext from "../../hooks/state-hooks/useAppContext";
 import { withFieldGroup } from "../../hooks/useAppForm";
 
 export const WordFlowStatuses = withFieldGroup({

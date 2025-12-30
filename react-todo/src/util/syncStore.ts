@@ -1,4 +1,4 @@
-import type { FileError } from "../hooks/useProject";
+import type { FileError } from "../hooks/state-hooks/useProject";
 import { defaultConfig } from "./constants";
 import {
   toAppData,

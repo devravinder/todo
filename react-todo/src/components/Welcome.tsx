@@ -1,5 +1,5 @@
 import useFileHandle from "../hooks/useFileHandler";
-import type { FileError } from "../hooks/useProject";
+import type { FileError } from "../hooks/state-hooks/useProject";
 import { fileErrorMessages, welcomeData } from "../util/constants";
 import type { FileHandleResult } from "../util/FileHandler";
 import { FOLDER, LOADING } from "../util/icons";

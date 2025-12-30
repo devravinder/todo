@@ -7,16 +7,16 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import Welcome from "../components/Welcome";
-import type { AppData } from "../util/converter";
+import Welcome from "../../components/Welcome";
+import type { AppData } from "../../util/converter";
 import {
   readFromStore,
   writeToStore,
   type FileReadResult,
-} from "../util/syncStore";
-import { useIndexedDB } from "./useIndexDB";
-import { useSessionId } from "./useSessionId";
-import { IndexedDb } from "../util/IndexedDb";
+} from "../../util/syncStore";
+import { useIndexedDB } from "../useIndexDB";
+import { useSessionId } from "../useSessionId";
+import { IndexedDb } from "../../util/IndexedDb";
 
 type ProjectContextType = {
   activeProject: Project;

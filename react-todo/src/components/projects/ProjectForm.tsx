@@ -1,7 +1,7 @@
 import { useAppForm } from "../../hooks/useAppForm";
 import useFileHandle from "../../hooks/useFileHandler";
-import type { Project } from "../../hooks/useProject";
-import useProject from "../../hooks/useProject";
+import type { Project } from "../../hooks/state-hooks/useProject";
+import useProject from "../../hooks/state-hooks/useProject";
 import { MINUS } from "../../util/icons";
 import NewTextInput from "../settings/NewTextInput";
 

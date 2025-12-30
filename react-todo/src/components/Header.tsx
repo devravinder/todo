@@ -1,5 +1,5 @@
 import React from "react";
-import useProject from "../hooks/useProject";
+import useProject from "../hooks/state-hooks/useProject";
 import { ADD, ARCHIVE, FOLDER, SETTINGS } from "../util/icons";
 
 interface HeaderProps {

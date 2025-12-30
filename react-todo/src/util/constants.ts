@@ -1,4 +1,4 @@
-import type { FileError } from "../hooks/useProject";
+import type { FileError } from "../hooks/state-hooks/useProject";
 
 export const DATE_FORMAT = "DD-MMM-YYYY";
 export const FORM_DATE_FORMAT = "YYYY-MM-DD";

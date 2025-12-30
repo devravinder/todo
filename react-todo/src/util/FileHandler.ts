@@ -1,4 +1,4 @@
-import type { FileError } from "../hooks/useProject";
+import type { FileError } from "../hooks/state-hooks/useProject";
 
 const MARKDOWN_FILE = "todo.md";
 const JSON_FILE = "todo.json";

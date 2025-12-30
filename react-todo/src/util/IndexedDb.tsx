@@ -1,5 +1,5 @@
 import type { useIndexedDB } from "../hooks/useIndexDB";
-import type { Project } from "../hooks/useProject";
+import type { Project } from "../hooks/state-hooks/useProject";
 
   type DB<T> = ReturnType< typeof useIndexedDB<T>>
 
