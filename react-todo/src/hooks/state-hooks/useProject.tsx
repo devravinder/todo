@@ -31,7 +31,7 @@ type ProjectContextType = {
   ) => Promise<void>;
   getSampleNewProject: (fileHandle: FileSystemFileHandle) => Project;
   getProjects: () => Promise<Project[]>;
-  setActiveProject: (project: Project) => void;
+  switchActiveProject: (project: Project) => void;
   updateProejct: (project: Project) => Promise<IDBValidKey>;
 };
 
@@ -56,7 +56,7 @@ export const ProjectContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [activeProject, setCProject] = useState<Project>();
+  const [activeProject, setActiveProject] = useState<Project>();
   const [loading, setLoading] = useState(false);
   const [appData, setAppData] = useState<AppData>();
   const [fileError, setFileError] = useState<FileError>();
@@ -86,7 +86,7 @@ export const ProjectContextProvider = ({
     const id = crypto.randomUUID();
     const project: Project = {
       id,
-      name: `${id} | ${fileHandle.name}`,
+      name: `${fileHandle.name} | ${id}`,
       type: fileHandle.name.includes(".md") ? "md" : "json",
       fileHandle,
       env: "LOCAL",
@@ -111,9 +111,10 @@ export const ProjectContextProvider = ({
       ...getSampleNewProject(fileHandle),
       id: sessionId,
       sessionId,
+      lastAccessed: new Date().getTime()
     };
     await IndexedDb.addProject(db, STORE_INSTANCE_NAME, project);
-    setCProject(project);
+    setActiveProject(project);
   };
 
   const onProjectFileError = useCallback(
@@ -129,6 +130,14 @@ export const ProjectContextProvider = ({
     [setFileError, db]
   );
 
+  const switchActiveProject=async(project:Project)=>{
+
+        project.lastAccessed = new Date().getTime()
+        setActiveProject(pre=>({...pre, ...project}));
+        await updateProject(project);
+  }
+
+
   const onGetStarted = (fileHandleResult: FileHandleResult) => {
     setFileError(undefined);
     if ("handle" in fileHandleResult)
@@ -136,14 +145,7 @@ export const ProjectContextProvider = ({
     else onProjectFileError(fileHandleResult.error);
   };
 
-  const switchActiveProject=async(project:Project)=>{
-
-        project.lastAccessed = new Date().getTime()
-        setCProject(project);
-
-        await updateProject(project);
-  }
-
+  
   useEffect(() => {
     const syncState = async (project: Project) => {
       setLoading(true);
@@ -183,7 +185,7 @@ export const ProjectContextProvider = ({
         updateProjectData,
         getSampleNewProject,
         getProjects,
-        setActiveProject: setCProject,
+        switchActiveProject,
         updateProejct: updateProject,
         appData,
       }}

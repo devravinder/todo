@@ -8,7 +8,7 @@ interface ProjectModalProps {
 }
 
 const ProjectModal = ({ onClose }: ProjectModalProps) => {
-  const { activeProject, getProjects, setActiveProject, updateProejct } =
+  const { activeProject, getProjects, switchActiveProject: setActiveProject, updateProejct } =
     useProject();
 
   const [projects, setProjects] = useState<Project[]>([]);
