@@ -1,15 +1,25 @@
 import { useAppForm } from "../../hooks/useAppForm";
+import useFileHandle from "../../hooks/useFileHandler";
+import type { Project } from "../../hooks/useProject";
+import useProject from "../../hooks/useProject";
 import { MINUS } from "../../util/icons";
 import NewTextInput from "../settings/NewTextInput";
 
+export type ProjectFormData = {
+  activeProject: Project;
+  projects: Project[];
+};
 
 type FormProps = {
   onCancel: VoidFunction;
+  data?: ProjectFormData;
 };
 
-export default function ProjectForm({ onCancel }: FormProps) {
+export default function ProjectForm({ onCancel, data }: FormProps) {
+  const { getSampleNewProject } = useProject();
+
   const form = useAppForm({
-    defaultValues: { projects: [] } as { projects: string[] },
+    defaultValues: data,
     onSubmit: async ({ value }) => {
       try {
         console.log({ value });
@@ -19,13 +29,28 @@ export default function ProjectForm({ onCancel }: FormProps) {
     },
   });
 
+  const { isOpening, openFolder } = useFileHandle();
+  const onNewProjectClick = async <
+    Field extends { pushValue: (item: Project) => void }
+  >(
+    field: Field,
+    name: string
+  ) => {
+    const fileHandleResult = await openFolder();
+
+    if ("handle" in fileHandleResult)
+      field.pushValue({
+        ...getSampleNewProject(fileHandleResult.handle),
+        name,
+      });
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
     }
   };
 
-  const label = "projects";
   return (
     <form
       onSubmit={(e) => {
@@ -40,13 +65,14 @@ export default function ProjectForm({ onCancel }: FormProps) {
             Manage Projects
           </h3>
 
-          <form.Field name={label} mode="array">
+          <form.Field name={"projects"} mode="array">
             {(field) => {
               return (
                 <div className="flex flex-col gap-4 max-h-72 p-4 overflow-y-auto">
                   <NewTextInput
                     label={"project"}
-                    onAdd={(item) => field.pushValue(item)}
+                    onAdd={(item) => onNewProjectClick(field, item)}
+                    disabled={isOpening}
                   />
                   {field.state.value.map((_, i) => {
                     return (

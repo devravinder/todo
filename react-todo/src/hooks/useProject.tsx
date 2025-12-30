@@ -26,6 +26,7 @@ type ProjectContextType = {
     tasks: Task[],
     config: TodoConfig
   ) => Promise<void>;
+  getSampleNewProject: (fileHandle: FileSystemFileHandle) => Project
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -37,6 +38,7 @@ export type Project = {
   lastAccessed: number;
   env: "CLOUD" | "LOCAL";
   type: FileFormat;
+  sessionId?: string
 };
 
 const DB_NAME = "todo-db";
@@ -76,6 +78,18 @@ export const ProjectContextProvider = ({
     await writeToStore(tasks, config, project.fileHandle, project.type);
   };
 
+  const getSampleNewProject=(fileHandle: FileSystemFileHandle)=>{
+    const project: Project = {
+      id: crypto.randomUUID(),
+      name: fileHandle.name,
+      type: fileHandle.name.includes(".md") ? "md" : "json",
+      fileHandle,
+      env: "LOCAL",
+      lastAccessed: new Date().getTime(),
+    }
+    return project
+  }
+
   const readProjectData = async (project: Project): Promise<FileReadResult> => {
     const data = await readFromStore(project.fileHandle, project.type);
     return data;
@@ -83,12 +97,9 @@ export const ProjectContextProvider = ({
 
   const onNewProjectSelect = async (fileHandle: FileSystemFileHandle) => {
     const project: Project = {
+      ...getSampleNewProject(fileHandle),
       id: sessionId,
-      name: fileHandle.name,
-      type: fileHandle.name.includes(".md") ? "md" : "json",
-      fileHandle,
-      env: "LOCAL",
-      lastAccessed: new Date().getTime(),
+      sessionId
     };
     await IndexedDb.addProject(db, STORE_INSTANCE_NAME, project);
     setActiveProject(project);
@@ -147,6 +158,7 @@ export const ProjectContextProvider = ({
       value={{
         activeProject,
         updateProjectData,
+        getSampleNewProject,
         appData,
       }}
     >
