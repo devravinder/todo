@@ -20,6 +20,7 @@ import { useIndexedDB } from "../useIndexDB";
 import { useSessionId } from "../useSessionId";
 import { IndexedDb } from "../../util/IndexedDb";
 import type { FileHandleResult } from "../../util/FileHandler";
+import Loading from "../../components/Loading";
 
 type ProjectContextType = {
   activeProject: Project;
@@ -58,6 +59,7 @@ export const ProjectContextProvider = ({
   children: ReactNode;
 }) => {
   const [activeProject, setActiveProject] = useState<Project>();
+  const [initialLoading, setInitialLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [appData, setAppData] = useState<AppData>();
   const [fileError, setFileError] = useState<FileError>();
@@ -166,6 +168,7 @@ export const ProjectContextProvider = ({
 
   useLayoutEffect(() => {
     const getLatestProject = async () => {
+      setInitialLoading(true)
       const projects = await IndexedDb.getProjects(db, STORE_INSTANCE_NAME);
       if (projects.length) {
         const lastAccessed = projects.sort(
@@ -173,14 +176,21 @@ export const ProjectContextProvider = ({
         )[0];
         switchActiveProject(lastAccessed);
       }
+      setInitialLoading(false)
     };
 
     getLatestProject();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  if(initialLoading || loading)
+     return <Loading/>;
 
-  if (!activeProject || loading || fileError || !appData)
+  if (!activeProject || fileError || !appData )
     return <Welcome fileError={fileError} onGetStarted={onGetStarted} />;
+
+
+
 
   return (
     <ProjectContext.Provider
